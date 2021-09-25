@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text } from "react-native";
 import { FontSize, Spacing } from '../../metrics';
 import colors from '../../utils/colors';
+import { memoDeepEqual } from '../../utils/helpers';
 
 const CustomText = ({ children, h1, h2, h3, h4, h5, bold,
   semiBold, italic, customStyle, containerStyle, onPress }) => {
@@ -38,4 +39,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default React.memo(CustomText)
+export default memoDeepEqual(CustomText)

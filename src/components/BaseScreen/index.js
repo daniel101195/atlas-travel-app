@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet, View, SafeAreaView, ImageBackground, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { LoadingView } from '../../components';
@@ -7,6 +7,15 @@ import colors from '../../utils/colors';
 
 const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
   urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet }) => {
+
+  const renderFooter = useCallback(() => {
+    if (!footer) return;
+    return (
+      <View style={styles.containerFooter}>
+        {footer()}
+      </View>
+    )
+  }, [footer])
 
   return (
     <ImageBackground style={styles.container}
@@ -21,9 +30,7 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
         <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
           {children}
         </View>
-        {!!footer && <View style={styles.containerFooter}>
-          {footer()}
-        </View>}
+        {renderFooter()}
       </SafeAreaView>
       <LoadingView color={colors.primaryPink} size={64} isVisible={isLoading} />
       {!!bottomSheet && bottomSheet()}

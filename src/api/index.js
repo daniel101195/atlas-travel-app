@@ -6,6 +6,8 @@ const ERRORS_FIREBASE = {
   'auth/user-not-found': LocalizeString.errorUserNotFound,
   'auth/wrong-password': LocalizeString.errorPasswordNotFound,
   'auth/email-already-in-use': LocalizeString.errorEmailAlreadyUsed,
+  'auth/network-request-failed': LocalizeString.errorNetworkFailed,
+  'auth/too-many-requests': LocalizeString.errorTooManyRequested,
   'unknown': LocalizeString.errorUnknown
 }
 
@@ -21,7 +23,7 @@ const onSignIn = async ({ username = '', password = '' }) => {
         resolve(true);
       })
       .catch(error => {
-        console.log('===>onSignIn: ', error);
+        console.log('===>onSignIn: ', error, ERRORS_FIREBASE[error.code]);
         error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
         reject(error);
       });

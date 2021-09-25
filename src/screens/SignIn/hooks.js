@@ -15,8 +15,7 @@ const useLoginHooks = (props) => {
   const [isShowPass, setShowPass] = useState(false);
   const [isValidate, setValidate] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginData, setLoginData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
 
   const onChangeRememberLogin = useCallback(() => {
@@ -24,13 +23,13 @@ const useLoginHooks = (props) => {
   }, [isRemember])
 
   const onChangeUsername = useCallback((email) => {
-    setUsername(email);
+    setLoginData({ ...loginData, username: email });
     onChangeValidation();
-  }, [username])
+  }, [loginData])
 
   const onChangePassword = useCallback((pass) => {
-    setPassword(pass)
-  }, [password])
+    setLoginData({ ...loginData, password: pass });
+  }, [loginData])
 
   const onDispatchUserInfo = (userInfo) => {
     dispatch(updateUserInfo(userInfo));
@@ -41,13 +40,13 @@ const useLoginHooks = (props) => {
       onChangeLoading(true);
       if (onValidateInput()) {
         const userInfo = {
-          userName: username,
-          password,
-          email: username,
+          userName: loginData?.username,
+          password: loginData?.password,
+          email: loginData?.username,
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
         onDispatchUserInfo(userInfo);
-        const result = await onSignIn({ username, password });
+        const result = await onSignIn({ username: loginData?.username, password: loginData?.password });
         if (result) {
           isRemember && saveUserInfo(userInfo);
           redirect_comp(stacks.home.name, props?.navigation, screens.discover.name);
@@ -57,7 +56,7 @@ const useLoginHooks = (props) => {
 
     }
     onChangeLoading(false);
-  }, [username, password])
+  }, [loginData])
 
   const onHidePass = useCallback(() => {
     setShowPass(false);
@@ -80,6 +79,7 @@ const useLoginHooks = (props) => {
   }
 
   const onValidateInput = useCallback(() => {
+    const { username, password } = loginData;
     if (checkStringEmpty(username)) {
       setErrorMessage(LocalizeString.stringIsEmpty.replace('{FIELDS}', 'Username'));
       checkStringEmpty(password) && setErrorMessage(LocalizeString.stringIsEmpty.replace('{FIELDS}', 'Password'));
@@ -94,20 +94,19 @@ const useLoginHooks = (props) => {
       return false;
     }
     return true;
-  }, [username, password])
+  }, [loginData])
 
   const onGetUserInfo = async () => {
     setLoading(true);
     const { username, password } = props?.route?.params;
     if (!!username && !!password) {
-      setUsername(username);
-      setPassword(password);
+      setLoginData({ username, password });
     } else {
       const data = await getUserInfo();
-      if (!isEmpty(data)) {
-        setUsername(data[data.length - 1].userName);
-        setPassword(data[data.length - 1].password);
-      }
+      !isEmpty(data) && setLoginData({
+        username: data[data.length - 1].userName,
+        password: data[data.length - 1].password
+      });
     }
     setLoading(false);
   }
@@ -120,22 +119,21 @@ const useLoginHooks = (props) => {
 
   useEffect(() => {
     if (isValidate) {
-      if (!validateEmail(username.toLowerCase())) {
+      if (!validateEmail(loginData?.username.toLowerCase())) {
         errorMessage !== LocalizeString.titleInvalidFormatEmail &&
           setErrorMessage(LocalizeString.titleInvalidFormatEmail)
       } else {
         setErrorMessage('')
       }
     }
-  }, [username])
+  }, [loginData?.username])
 
   return {
     isRemember,
-    username,
-    password,
     isShowPass,
     errorMessage,
     isLoading,
+    loginData,
     onChangeUsername,
     onChangePassword,
     onChangeRememberLogin,

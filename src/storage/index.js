@@ -1,9 +1,10 @@
 import Realm from "realm";
-import { UserInfoSchema, SCHEMA_NAMES } from './models';
+import { UserInfoSchema, SCHEMA_NAMES, SCHEMA_VERSION } from './models';
 
 const createRealm = async (schema) => {
   return await Realm.open({
     schema: [schema],
+    schemaVersion: SCHEMA_VERSION
   });
 }
 
@@ -41,7 +42,7 @@ const readDataWithPrimaryKey = async (schema, schemaName = '', key = '') => {
       return object;
     }
   } catch (error) {
-    console.log('===>readData: ', error);
+    console.log('===>readDataWithPrimaryKey: ', error);
   }
 }
 

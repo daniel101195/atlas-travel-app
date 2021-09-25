@@ -51,5 +51,7 @@ export default {
   errorUserNotFound: 'User not found.',
   errorPasswordNotFound: 'Password is invalid or not exist.',
   errorEmailAlreadyUsed: 'The email address is already in use by another account.',
+  errorNetworkFailed: 'A network error has occurred, please try again.',
+  errorTooManyRequested: 'You have been blocked due to many failed login attempts. Please try again later.',
   errorUnknown: 'Unknown error',
 } 

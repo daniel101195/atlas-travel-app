@@ -9,12 +9,12 @@ import { LocalizeString } from '../../localize';
 import { memoDeepEqual } from '../../utils/helpers'
 
 const SignIn = (props) => {
-  const { isRemember, isLoading, username, password, isShowPass, errorMessage,
-    onShowPass, onHidePass, onSubmit, onChangePassword,
-    onChangeUsername, onChangeRememberLogin, onNavigateSignUp } = useLoginHooks(props);
+  const { isRemember, isLoading, isShowPass, errorMessage, loginData,
+    onShowPass, onHidePass, onSubmit, onChangePassword, onChangeUsername, 
+    onChangeRememberLogin, onNavigateSignUp } = useLoginHooks(props);
 
   const renderButtonLogin = useCallback(() => <Button onPress={onSubmit} title={LocalizeString.titleLogin} />,
-    [username, password, errorMessage])
+    [loginData, errorMessage])
 
   const renderInputs = useCallback(() => {
     const iconEmail = errorMessage === '' ?
@@ -25,7 +25,7 @@ const SignIn = (props) => {
         <Input
           label={LocalizeString.titleEmail}
           onChangeText={onChangeUsername}
-          value={username}
+          value={loginData?.username}
           iconName={iconEmail}
           iconColor={colors.primaryPink}
           iconType='material-community' />
@@ -38,11 +38,11 @@ const SignIn = (props) => {
           iconName={isShowPass ? 'eye-slash' : 'eye'}
           iconType='font-awesome'
           isSecure={!isShowPass}
-          value={password} />
+          value={loginData?.password} />
         {renderRemenberLogin()}
       </View>
     )
-  }, [username, password, errorMessage, isShowPass, isRemember])
+  }, [loginData, errorMessage, isShowPass, isRemember])
 
   const renderRemenberLogin = useCallback(() => {
     return (
