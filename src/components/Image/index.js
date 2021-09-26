@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { memoDeepEqual } from '../../utils/helpers';
 
 const Image = ({ style = {}, source = '', headers = {}, isLocal = true, onPress,
   priority = FastImage.priority.normal, resizeMode = FastImage.resizeMode.contain }) => (
@@ -27,4 +28,4 @@ const Image = ({ style = {}, source = '', headers = {}, isLocal = true, onPress,
     />
 )
 
-export default React.memo(Image)
+export default memoDeepEqual(Image)

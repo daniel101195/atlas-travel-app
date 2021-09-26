@@ -23,21 +23,14 @@ const useSignUpHooks = (props, useForm) => {
   const inputs = ['Username', 'Password', 'confirmPassword', 'Email'];
   const [isAgreeTerm, setAgreeTerm] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [shouldPassInfo, setPassInfo] = useState(false);
 
   const onChangeAgree = useCallback((onChange = () => { }) => {
     setAgreeTerm(!isAgreeTerm);
     onChange(!isAgreeTerm)
   }, [isAgreeTerm])
 
-  const onNavigateSignIn = useCallback(() => {
-    if (shouldPassInfo) {
-      const username = control?.fieldsRef?.current?.Email?._f?.value;
-      const password = control?.fieldsRef?.current?.Password?._f?.value;
-      redirect(props?.navigation, screens.signIn.name, REDIRECT_TYPE.replace, { username, password });
-    } else {
-      redirect(props?.navigation, screens.signIn.name, REDIRECT_TYPE.replace);
-    }
+  const onNavigateSignIn = useCallback((userInfo = {}) => {
+    redirect(props?.navigation, screens.signIn.name, REDIRECT_TYPE.replace, userInfo);
   }, [props])
 
   const onNavigateEmail = useCallback(() => {
@@ -45,25 +38,31 @@ const useSignUpHooks = (props, useForm) => {
   }, [props])
 
   const onSubmit = useCallback(async (data) => {
-    if (data) {
-      try {
+    try {
+      if (data) {
         setLoading(true);
         const result = await onSignUp({ username: data.Email, password: data.Password });
         if (result) {
-          setPassInfo(true);
-          const profile = {
-            displayName: data.Username,
-            photoURL: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
-          };
-          const resp = await onUpdateUserProfile({ updateProfile: profile });
-          resp && onNavigateSignIn();
+          const resp = await onUpdateProfile(data);
+          resp && onNavigateSignIn({
+            email: data.Email,
+            password: data.Password
+          });
         }
         setLoading(false);
-      } catch (error) {
-        setLoading(false);
       }
+    } catch (error) {
+      setLoading(false);
     }
   }, [isAgreeTerm])
+
+  const onUpdateProfile = async (data) => {
+    const profile = {
+      displayName: data.Username,
+      photoURL: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
+    };
+    return await onUpdateUserProfile({ updateProfile: profile });;
+  }
 
   const onValidateError = useCallback(() => {
     if (Object.keys(errors).length > 0) return;
@@ -72,10 +71,10 @@ const useSignUpHooks = (props, useForm) => {
 
   const onGetDefaultValue = (type) => {
     switch (type) {
-      case inputs[0]: return 'Daniel';
-      case inputs[1]: return 'Viet@123';
-      case inputs[2]: return 'Viet@123';
-      case inputs[3]: return 'daniel@gmail.com';
+      case inputs[0]: return '';
+      case inputs[1]: return '';
+      case inputs[2]: return '';
+      case inputs[3]: return '';
       default: return '';
     }
   }

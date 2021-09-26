@@ -64,7 +64,6 @@ const useLoginHooks = (props) => {
 
   const onClearOldData = async () => {
     const oldData = await getUserInfo();
-    console.log('deleteData123: ', oldData[0]);
     !isEmpty(oldData) &&
       oldData[0].email !== loginData?.username && 
       deleteUserInfo(oldData[0].email);
@@ -110,14 +109,13 @@ const useLoginHooks = (props) => {
 
   const onGetUserInfo = async () => {
     setLoading(true);
-    const { username, password } = props?.route?.params;
-    if (!!username && !!password) {
-      setLoginData({ username: lowercaseLetter(username), password });
+    const { email, password } = props?.route?.params;
+    if (!!email && !!password) {
+      setLoginData({ username: lowercaseLetter(email), password });
     } else {
       const data = await getUserInfo();
-      console.log('get data 123: ', data);
       !isEmpty(data) && setLoginData({
-        username: lowercaseLetter(data[data.length - 1].username),
+        username: lowercaseLetter(data[data.length - 1].email),
         password: data[data.length - 1].password
       });
     }

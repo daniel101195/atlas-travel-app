@@ -48,7 +48,7 @@ export default {
   errorEmailNotValid: 'Email is not valid',
   errorRequireField: 'This field is require',
   errorConfirmTerm: 'Please read and accept Terms & Stuff',
-  errorUserNotFound: 'User not found.',
+  errorUserNotFound: 'Email/Password is incorrect',
   errorPasswordNotFound: 'Password is invalid or not exist.',
   errorEmailAlreadyUsed: 'The email address is already in use by another account.',
   errorNetworkFailed: 'A network error has occurred, please try again.',

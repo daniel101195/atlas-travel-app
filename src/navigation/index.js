@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { CustomText, Image } from '../components';
 import { screens, stacks } from './screens';
 import Dashboard from '../screens/Dashboard';
 import SignIn from '../screens/SignIn';
@@ -11,7 +12,7 @@ import Email from '../screens/Email';
 import Discover from '../screens/Discover';
 import SignOut from '../screens/SignOut';
 import colors from '../utils/colors';
-import { Spacing } from '../metrics';
+import { Radius, Spacing } from '../metrics';
 import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';
@@ -85,11 +86,29 @@ const AuthenticationStackNavigation = () => {
 }
 
 const MainDrawerNavigation = () => {
-  const { state, dispatch } = useContext(GlobalContext);
+  const { state } = useContext(GlobalContext);
+
+  const header = () =>  {
+    const { avatar, email, username } = state?.userInfo || {};
+    return (
+      <View style={styles.containerHeader}>
+        <Image source={{ uri: avatar }} style={styles.avatar}/>
+        <CustomText>{email}</CustomText>
+      </View>
+    )
+  }
+
+  const renderSeparator = () => {
+    return (
+      <View style={styles.separator}/>
+    )
+  }
 
   const content = (props) => {
     return (
       <DrawerContentScrollView {...props}>
+        {header()}
+        {renderSeparator()}
         <DrawerItem
           icon={() => <Icon name="exit-to-app" type='material-community' size={24} color={colors.grayMedium} />}
           label={screens.signOut.name}
@@ -118,6 +137,16 @@ const App = () => {
 }
 
 const styles = StyleSheet.create({
+  containerHeader: {
+    paddingHorizontal: Spacing.L,
+    marginBottom:  Spacing.L
+  },
+  avatar: {
+    width:  56,
+    height: 56,
+    borderRadius: 28,
+    marginBottom: Spacing.S
+  },
   headerTitle: {
     fontFamily: 'Montserrat-Medium',
     letterSpacing: Spacing.XXS,
@@ -126,6 +155,10 @@ const styles = StyleSheet.create({
   },
   iconBack: {
     marginStart: Spacing.M
+  },
+  separator: {
+    height: Spacing.XXS,
+    backgroundColor: colors.grayLight
   }
 })
 

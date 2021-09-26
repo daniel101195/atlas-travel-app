@@ -8,7 +8,7 @@ import { LocalizeString } from '../../localize';
 import useSignUpHooks from './hooks';
 import { upperFirstChar } from '../../utils/string';
 import { Controller, useForm } from "react-hook-form";
-import { memoDeepEqual } from '../../utils/helpers'
+import { memoDeepEqual, lowercaseLetter } from '../../utils/helpers';
 
 const fontSizeTitle = 28;
 
@@ -34,7 +34,9 @@ const SignUp = (props) => {
                 containerStyle={styles.input}
                 label={LocalizeString[labelString]}
                 errorMessage={errors?.[item]?.message}
-                onChangeText={value => onChange(value)} />
+                onChangeText={value => {
+                  index === 3 ? onChange(lowercaseLetter(value)) : onChange(value);
+                }} />
             )}
             name={item}
             defaultValue={() => onGetDefaultValue(item)}
