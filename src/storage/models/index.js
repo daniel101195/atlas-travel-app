@@ -1,14 +1,18 @@
 
+const SCHEMA_VERSION = 1;
+
+const UPDATE_MODE = {
+  MODIFIED: 'modified'
+}
+
 const SCHEMA_NAMES = {
   userInfo: "UserInfo"
 }
 
-const SCHEMA_VERSION = 2;
-
 const UserInfoSchema = {
   name: SCHEMA_NAMES.userInfo,
   properties: {
-    userName: "string",
+    username: "string",
     password: "string",
     email: "string",
     avatar: "string",
@@ -19,5 +23,6 @@ const UserInfoSchema = {
 export {
   UserInfoSchema,
   SCHEMA_NAMES,
-  SCHEMA_VERSION
+  SCHEMA_VERSION,
+  UPDATE_MODE
 }

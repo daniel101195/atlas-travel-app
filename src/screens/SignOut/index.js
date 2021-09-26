@@ -10,7 +10,7 @@ const SignOut = (props, userInfo) => {
   }
 
   onSignOut().then(() => {
-    deleteUserInfoRealm();
+    // deleteUserInfoRealm();
     redirect_comp(stacks.authen.name, props?.navigation, screens.dashboard.name);
   });
 }

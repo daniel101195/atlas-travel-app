@@ -29,4 +29,13 @@ const memoDeepEqual = component => {
   return memo(component, (prevProps, nextProps) => isEqual(prevProps, nextProps));
 };
 
-export { getSccreenWidth, getSccreenHeight, renderErrorMessage, renderSuccessMessage, memoDeepEqual }
+const lowercaseLetter = (string = '') => {
+  return string.charAt(0).toLowerCase() + string.slice(1); 
+}
+
+export { getSccreenWidth, 
+  getSccreenHeight, 
+  renderErrorMessage, 
+  renderSuccessMessage, 
+  lowercaseLetter,
+  memoDeepEqual }

@@ -14,7 +14,7 @@ const SignIn = (props) => {
     onChangeRememberLogin, onNavigateSignUp } = useLoginHooks(props);
 
   const renderButtonLogin = useCallback(() => <Button onPress={onSubmit} title={LocalizeString.titleLogin} />,
-    [loginData, errorMessage])
+    [loginData, errorMessage, isRemember])
 
   const renderInputs = useCallback(() => {
     const iconEmail = errorMessage === '' ?
@@ -54,7 +54,7 @@ const SignIn = (props) => {
         }} />
       </View>
     )
-  }, [isRemember])
+  }, [isRemember, loginData])
 
   const renderFooter = useCallback(() => {
     return (

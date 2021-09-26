@@ -1,5 +1,8 @@
+import { isEmpty } from "lodash";
 import Realm from "realm";
-import { UserInfoSchema, SCHEMA_NAMES, SCHEMA_VERSION } from './models';
+import { UserInfoSchema, SCHEMA_NAMES, SCHEMA_VERSION, UPDATE_MODE } from './models';
+
+//=============================== Helper Functions ================================
 
 const createRealm = async (schema) => {
   return await Realm.open({
@@ -14,7 +17,7 @@ const writeData = async (schemeName = '', objData = {}, schema, primaryKey) => {
     if (realm) {
       const object = await readDataWithPrimaryKey(schema, schemeName, primaryKey);
       // check if Object with same primary key is existed or not
-      !object && realm.write(() => realm.create(schemeName, objData)); 
+      !object && realm.write(() => realm.create(schemeName, objData));
       closeRealm(realm);
     }
   } catch (error) {
@@ -58,12 +61,32 @@ const deleteDataWithPrimaryKey = async (objPrimaryKey = '', schema, schemaName) 
   }
 }
 
+const upsertWithPrimaryKey = async (userInfo = {}, schema, schemaName) => {
+  try {
+    const realm = await createRealm(schema);
+    if (realm) {
+      realm.write(() => realm.create(schemaName, userInfo, UPDATE_MODE.MODIFIED));
+      closeRealm(realm);
+    }
+  } catch (error) {
+    console.log('===>upsertDataError: ', error);
+  }
+}
+
 const closeRealm = (realm) => {
   !!realm && !realm.isClosed && realm.close();
 }
 
+//=================================== Execute Functions ===================================
+
 const saveUserInfo = async (userInfo = {}) => {
-  await writeData(SCHEMA_NAMES.userInfo, userInfo, UserInfoSchema, userInfo.email);
+  const schemaName = SCHEMA_NAMES.userInfo;
+  const { resp } = await readData(UserInfoSchema,schemaName);
+  if (!isEmpty(resp)) { // make storage user is unique by delete the exist and add new.
+    const { email } = resp[0] || {};
+    await deleteDataWithPrimaryKey(email, UserInfoSchema, schemaName);
+  }
+  await upsertWithPrimaryKey(userInfo, UserInfoSchema, schemaName);
 }
 
 const getUserInfo = async () => {

@@ -3,11 +3,12 @@ import { validateEmail, checkStringEmpty } from '../../utils/string';
 import { LocalizeString } from '../../localize';
 import { screens, stacks } from "../../navigation/screens";
 import { redirect, redirect_comp, REDIRECT_TYPE } from "../../navigation/helper";
-import { saveUserInfo, getUserInfo } from '../../storage';
+import { saveUserInfo, getUserInfo, deleteUserInfo } from '../../storage';
 import { updateUserInfo } from '../../context/actions';
 import { GlobalContext } from '../../context';
 import { onSignIn } from '../../api';
 import isEmpty from 'lodash/isEmpty';
+import { lowercaseLetter } from '../../utils/helpers';
 
 const useLoginHooks = (props) => {
   const { dispatch } = useContext(GlobalContext);
@@ -23,7 +24,7 @@ const useLoginHooks = (props) => {
   }, [isRemember])
 
   const onChangeUsername = useCallback((email) => {
-    setLoginData({ ...loginData, username: email });
+    setLoginData({ ...loginData, username: lowercaseLetter(email) });
     onChangeValidation();
   }, [loginData])
 
@@ -40,23 +41,34 @@ const useLoginHooks = (props) => {
       onChangeLoading(true);
       if (onValidateInput()) {
         const userInfo = {
-          userName: loginData?.username,
+          username: loginData?.username,
           password: loginData?.password,
           email: loginData?.username,
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
         onDispatchUserInfo(userInfo);
-        const result = await onSignIn({ username: loginData?.username, password: loginData?.password });
-        if (result) {
-          isRemember && saveUserInfo(userInfo);
-          redirect_comp(stacks.home.name, props?.navigation, screens.discover.name);
-        }
+        onSubmitCompleted(await onSignIn({ username: loginData?.username, password: loginData?.password }), userInfo);
       }
     } catch (error) {
-
+      console.log('===>signInError: ', error);
     }
     onChangeLoading(false);
-  }, [loginData])
+  }, [loginData, isRemember])
+
+  const onSubmitCompleted = (result, userInfo = {}) => {
+    if (result) {
+      isRemember ? saveUserInfo(userInfo) : onClearOldData();
+      redirect_comp(stacks.home.name, props?.navigation, screens.discover.name);
+    }
+  }
+
+  const onClearOldData = async () => {
+    const oldData = await getUserInfo();
+    console.log('deleteData123: ', oldData[0]);
+    !isEmpty(oldData) &&
+      oldData[0].email !== loginData?.username && 
+      deleteUserInfo(oldData[0].email);
+  }
 
   const onHidePass = useCallback(() => {
     setShowPass(false);
@@ -100,11 +112,12 @@ const useLoginHooks = (props) => {
     setLoading(true);
     const { username, password } = props?.route?.params;
     if (!!username && !!password) {
-      setLoginData({ username, password });
+      setLoginData({ username: lowercaseLetter(username), password });
     } else {
       const data = await getUserInfo();
+      console.log('get data 123: ', data);
       !isEmpty(data) && setLoginData({
-        username: data[data.length - 1].userName,
+        username: lowercaseLetter(data[data.length - 1].username),
         password: data[data.length - 1].password
       });
     }
