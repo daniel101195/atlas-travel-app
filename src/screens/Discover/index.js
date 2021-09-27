@@ -7,13 +7,14 @@ import { Radius, Spacing } from '../../metrics';
 import useDiscoverHooks from './hooks';
 import { LocalizeString } from '../../localize';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { memoDeepEqual } from '../../utils/helpers';
 
 const Discover = (props) => {
   const { isLoading, scrollIndicatorPosition, scrollIndicatorSize, scrollIndicator,
     isShowBottomSheet, isSelected, onChangeBottomSheet, onChangeSelected,
     onToggleDrawer, onSetScrollBarWidth, onSetCompleteBarWidth } = useDiscoverHooks(props, LocalizeString);
 
-  const renderHeader = () => {
+  const renderHeader = useCallback(() => {
     return (
       <View style={styles.header}>
         <View style={styles.containerHeader}>
@@ -29,7 +30,7 @@ const Discover = (props) => {
         <View style={styles.line} />
       </View>
     )
-  }
+  }, [])
 
   const renderList = () => {
     return (
@@ -66,7 +67,7 @@ const Discover = (props) => {
     )
   }, [props])
 
-  const renderBottomSheet = () => {
+  const renderBottomSheet = useCallback(() => {
     return (
       <BottomSheet isVisible={isShowBottomSheet} onChangeVisible={onChangeBottomSheet}>
         {['Outdoor', 'Indoor', 'Adventure'].map((item, index) => (
@@ -80,7 +81,7 @@ const Discover = (props) => {
         ))}
       </BottomSheet>
     )
-  }
+  }, [isShowBottomSheet, isSelected])
 
   return (
     <BaseScreen
@@ -149,4 +150,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Discover
+export default memoDeepEqual(Discover)

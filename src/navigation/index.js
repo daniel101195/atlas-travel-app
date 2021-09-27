@@ -88,19 +88,22 @@ const AuthenticationStackNavigation = () => {
 const MainDrawerNavigation = () => {
   const { state } = useContext(GlobalContext);
 
-  const header = () =>  {
-    const { avatar, email, username } = state?.userInfo || {};
+  const header = () => {
+    const { photoURL, email, displayName } = state?.userInfo || {};
     return (
       <View style={styles.containerHeader}>
-        <Image source={{ uri: avatar }} style={styles.avatar}/>
-        <CustomText>{email}</CustomText>
+        <Image source={{ uri: photoURL }} style={styles.avatar} />
+        <View style={styles.containerText}>
+          <CustomText bold h4 customStyle={{ color: colors.black }}>{displayName}</CustomText>
+          <CustomText>{email}</CustomText>
+        </View>
       </View>
     )
   }
 
   const renderSeparator = () => {
     return (
-      <View style={styles.separator}/>
+      <View style={styles.separator} />
     )
   }
 
@@ -139,10 +142,13 @@ const App = () => {
 const styles = StyleSheet.create({
   containerHeader: {
     paddingHorizontal: Spacing.L,
-    marginBottom:  Spacing.L
+    marginBottom: Spacing.L
+  },
+  containerText: {
+    marginTop: Spacing.S
   },
   avatar: {
-    width:  56,
+    width: 56,
     height: 56,
     borderRadius: 28,
     marginBottom: Spacing.S
@@ -157,8 +163,8 @@ const styles = StyleSheet.create({
     marginStart: Spacing.M
   },
   separator: {
-    height: Spacing.XXS,
-    backgroundColor: colors.grayLight
+    height: Spacing.XS,
+    backgroundColor: colors.grayVeryLight
   }
 })
 

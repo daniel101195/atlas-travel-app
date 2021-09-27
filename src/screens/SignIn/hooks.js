@@ -6,7 +6,7 @@ import { redirect, redirect_comp, REDIRECT_TYPE } from "../../navigation/helper"
 import { saveUserInfo, getUserInfo, deleteUserInfo } from '../../storage';
 import { updateUserInfo } from '../../context/actions';
 import { GlobalContext } from '../../context';
-import { onSignIn } from '../../api';
+import { onSignIn, onGetUserInfo as onGetUserInfoFirestore } from '../../api';
 import isEmpty from 'lodash/isEmpty';
 import { lowercaseLetter } from '../../utils/helpers';
 
@@ -46,7 +46,6 @@ const useLoginHooks = (props) => {
           email: loginData?.username,
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
-        onDispatchUserInfo(userInfo);
         onSubmitCompleted(await onSignIn({ username: loginData?.username, password: loginData?.password }), userInfo);
       }
     } catch (error) {
@@ -55,9 +54,10 @@ const useLoginHooks = (props) => {
     onChangeLoading(false);
   }, [loginData, isRemember])
 
-  const onSubmitCompleted = (result, userInfo = {}) => {
+  const onSubmitCompleted = async (result, userInfo = {}) => {
     if (result) {
       isRemember ? saveUserInfo(userInfo) : onClearOldData();
+      onDispatchUserInfo(onGetUserInfoFirestore());
       redirect_comp(stacks.home.name, props?.navigation, screens.discover.name);
     }
   }
@@ -114,10 +114,13 @@ const useLoginHooks = (props) => {
       setLoginData({ username: lowercaseLetter(email), password });
     } else {
       const data = await getUserInfo();
-      !isEmpty(data) && setLoginData({
-        username: lowercaseLetter(data[data.length - 1].email),
-        password: data[data.length - 1].password
-      });
+      if (!isEmpty(data)) {
+        setLoginData({
+          username: lowercaseLetter(data[data.length - 1].email),
+          password: data[data.length - 1].password
+        });
+        onChangeRememberLogin();
+      }
     }
     setLoading(false);
   }

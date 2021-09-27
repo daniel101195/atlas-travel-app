@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableNativeFeedback, Animated, Dimensions } from 'react-native';
 import { Radius, Spacing } from '../../metrics';
 import colors from '../../utils/colors';
+import { memoDeepEqual } from '../../utils/helpers';
 
 const screenHeight = Dimensions.get("window").height;
 
@@ -81,4 +82,4 @@ const styles = StyleSheet.create({
   })
 })
 
-export default React.memo(BottomSheet)
+export default memoDeepEqual(BottomSheet)

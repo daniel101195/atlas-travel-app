@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { onSignUp, onUpdateUserProfile } from '../../api';
 
 const schema = yup.object().shape({
-  Username: yup.string().required(LocalizeString.errorRequireField).min(6).max(12),
+  Username: yup.string().required(LocalizeString.errorRequireField).min(6).max(15),
   Password: yup.string().required(LocalizeString.errorRequireField).matches(/(?=.*\d)(?=.*[A-Z])(?=.*\W)/, LocalizeString.errorPasswordNotValid),
   confirmPassword: yup.string().required(LocalizeString.errorRequireField)
     .oneOf([yup.ref('Password'), null], LocalizeString.errorConfirmPassNotMatch),

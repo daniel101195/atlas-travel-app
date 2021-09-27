@@ -1,4 +1,5 @@
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { renderErrorMessage, renderSuccessMessage } from '../utils/helpers';
 import { LocalizeString } from '../localize';
 
@@ -11,7 +12,11 @@ const ERRORS_FIREBASE = {
   'unknown': LocalizeString.errorUnknown
 }
 
-const onAuthStateChanged = (callback = () => {}) => {
+const FIRESTORE_COLLECTIONS = {
+  USERS: 'Users'
+}
+
+const onAuthStateChanged = (callback = () => { }) => {
   return auth().onAuthStateChanged(callback);
 }
 
@@ -74,4 +79,24 @@ const onSignOut = () => {
   })
 }
 
-export { onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onAuthStateChanged }
+const onGetUserInfo = () => {
+  return auth().currentUser;
+}
+
+const onSetUserInfo = ({ userInfo = {} }) => {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection(FIRESTORE_COLLECTIONS.USERS)
+      .doc(userInfo?.email)
+      .set(userInfo)
+      .then(() => {
+        resolve(true);
+      })
+      .catch(error => {
+        console.log('===>onSetUserInfo: ', error);
+        error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+      })
+  })
+}
+
+export { onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onAuthStateChanged, onSetUserInfo, onGetUserInfo }
