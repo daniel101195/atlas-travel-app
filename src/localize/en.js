@@ -41,6 +41,7 @@ export default {
 
   //Sign Out
   titleSignOut: 'Sign out',
+  titleEdit: 'Edit',
 
   // Error
   errorPasswordNotValid: 'Password is not valid',

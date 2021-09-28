@@ -1,18 +1,23 @@
 import { redirect_comp } from '../../navigation/helper';
 import { stacks, screens } from "../../navigation/screens";
-import { onSignOut } from '../../api';
+import { onSignOut as SignOutAuth } from '../../api';
 import { deleteUserInfo } from '../../storage';
 
-const SignOut = (props, userInfo) => {
+const SignOut = (navigation, state) => {
 
   const deleteUserInfoRealm = async () => {
+    const { userInfo = {} } = state;
     await deleteUserInfo(userInfo?.email);
   }
 
-  onSignOut().then(() => {
-    // deleteUserInfoRealm();
-    redirect_comp(stacks.authen.name, props?.navigation, screens.dashboard.name);
-  });
+  const onSignOut = async () => {
+    await SignOutAuth();
+    redirect_comp(stacks.authen.name, navigation, screens.dashboard.name);
+  }
+
+  return {
+    onSignOut
+  }
 }
 
 export default SignOut

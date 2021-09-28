@@ -1,4 +1,6 @@
 import { LocalizeString } from '../localize';
+import SignOut from '../screens/SignOut';
+import { icon_discover, icon_log_out } from '../utils/images';
 
 const screens = {
   dashboard: {
@@ -30,4 +32,16 @@ const stacks = {
   }
 }
 
-export { screens, stacks }
+const sideMenu = [
+  {
+    name: LocalizeString.titleDiscover,
+    icon: icon_discover
+  },
+  {
+    name: LocalizeString.titleSignOut,
+    icon: icon_log_out,
+    onPress: (navigation, state) => SignOut(navigation, state).onSignOut()
+  }
+]
+
+export { screens, stacks, sideMenu }

@@ -1,6 +1,7 @@
 
 export default {
   bgGradient: ['#FF7955', '#D23078'],
+  bgTransparent: ['#FFF', '#FFF'],
   bgIcon: '#EEE',
   white: '#FFF',
   black: '#000',

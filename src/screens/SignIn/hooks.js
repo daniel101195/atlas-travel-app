@@ -64,9 +64,7 @@ const useLoginHooks = (props) => {
 
   const onClearOldData = async () => {
     const oldData = await getUserInfo();
-    !isEmpty(oldData) &&
-      oldData[0].email !== loginData?.username && 
-      deleteUserInfo(oldData[0].email);
+    !isEmpty(oldData) && deleteUserInfo(oldData[0].email);
   }
 
   const onHidePass = useCallback(() => {

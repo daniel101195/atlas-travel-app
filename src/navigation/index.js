@@ -1,22 +1,23 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import React, { useContext, useEffect } from 'react';
+import { NavigationContainer, useNavigation, useRoute, getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
+import React, { useContext, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { CustomText, Image } from '../components';
-import { screens, stacks } from './screens';
+import { CustomText, Image, Button } from '../components';
+import { screens, stacks, sideMenu } from './screens';
 import Dashboard from '../screens/Dashboard';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import Email from '../screens/Email';
 import Discover from '../screens/Discover';
-import SignOut from '../screens/SignOut';
 import colors from '../utils/colors';
 import { Radius, Spacing } from '../metrics';
+import { scaleSize } from '../utils/spacing';
 import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';
 import { GlobalContext } from '../context';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,36 +88,56 @@ const AuthenticationStackNavigation = () => {
 
 const MainDrawerNavigation = () => {
   const { state } = useContext(GlobalContext);
+  const navigation = useNavigation();
+  const route = useRoute();
 
-  const header = () => {
+  const header = useCallback(() => {
     const { photoURL, email, displayName } = state?.userInfo || {};
     return (
       <View style={styles.containerHeader}>
         <Image source={{ uri: photoURL }} style={styles.avatar} />
         <View style={styles.containerText}>
-          <CustomText bold h4 customStyle={{ color: colors.black }}>{displayName}</CustomText>
+          <CustomText bold h3 customStyle={{ color: colors.black }}>{displayName}</CustomText>
           <CustomText>{email}</CustomText>
+          <Button onPress={() => { }} buttonStyle={styles.btnEdit} title={LocalizeString.titleEdit} />
         </View>
       </View>
     )
-  }
+  }, [state])
 
-  const renderSeparator = () => {
+  const renderSeparator = useCallback(() => {
     return (
       <View style={styles.separator} />
     )
-  }
+  }, [])
+
+  const renderBody = useCallback(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) || '';
+    return (
+      sideMenu.map((item, index) => {
+        const isFocused = routeName === item.name;
+        const gradient = isFocused ? colors.bgGradient : colors.bgTransparent;
+        return (
+          <TouchableOpacity onPress={() => item?.onPress(navigation, state)}>
+            <LinearGradient
+              key={index.toString()}
+              colors={gradient}
+              style={styles.containerDrawerItem(isFocused)}>
+              <Image tintColor={isFocused ? colors.white : colors.grayLight} source={item.icon} style={styles.iconMenu} />
+              <CustomText h5 customStyle={{ color: isFocused ? colors.white : colors.gray }}>{item.name}</CustomText>
+            </LinearGradient>
+          </TouchableOpacity>
+        )
+      })
+    )
+  }, [route])
 
   const content = (props) => {
     return (
       <DrawerContentScrollView {...props}>
         {header()}
         {renderSeparator()}
-        <DrawerItem
-          icon={() => <Icon name="exit-to-app" type='material-community' size={24} color={colors.grayMedium} />}
-          label={screens.signOut.name}
-          onPress={() => SignOut(props, state?.userInfo)}
-        />
+        {renderBody()}
       </DrawerContentScrollView>
     )
   }
@@ -142,11 +163,22 @@ const App = () => {
 const styles = StyleSheet.create({
   containerHeader: {
     paddingHorizontal: Spacing.L,
-    marginBottom: Spacing.L
+    marginBottom: Spacing.L,
+    alignItems: 'center'
   },
   containerText: {
-    marginTop: Spacing.S
+    marginTop: Spacing.S,
+    alignItems: 'center'
   },
+  containerDrawerItem: (isFocused = false) => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: Spacing.XS,
+    marginHorizontal: Spacing.M,
+    paddingStart: Spacing.S,
+    height: scaleSize(48),
+    borderRadius: Radius.S
+  }),
   avatar: {
     width: 56,
     height: 56,
@@ -164,7 +196,18 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: Spacing.XS,
+    marginBottom: Spacing.S,
     backgroundColor: colors.grayVeryLight
+  },
+  btnEdit: {
+    height: scaleSize(32),
+    paddingHorizontal: Spacing.S,
+    marginTop: Spacing.L
+  },
+  iconMenu: {
+    width: scaleSize(24),
+    height: scaleSize(24),
+    marginEnd: Spacing.M,
   }
 })
 
