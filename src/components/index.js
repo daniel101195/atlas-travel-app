@@ -9,6 +9,7 @@ import Button from './Button';
 import Image from './Image';
 import BottomSheet from './BottomSheet';
 import RadioButton from './RadioButton';
+import ImageBackground from './ImageBackground';
 
 export { 
   Input, 
@@ -21,5 +22,6 @@ export {
   Button,
   Image,
   BottomSheet,
-  RadioButton
+  RadioButton,
+  ImageBackground
 }

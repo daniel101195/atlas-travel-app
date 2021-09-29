@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView, ImageBackground, StatusBar } from 'react-native';
+import { StyleSheet, View, SafeAreaView, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { LoadingView } from '../../components';
-import { getSccreenHeight, getSccreenWidth, memoDeepEqual } from '../../utils/helpers';
+import { LoadingView, ImageBackground } from '../../components';
+import { memoDeepEqual } from '../../utils/helpers';
 import colors from '../../utils/colors';
 
 const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
@@ -18,23 +18,22 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
   }, [footer])
 
   return (
-    <ImageBackground style={styles.container}
-      source={urlImageBg}
-      imageStyle={styles.imageBg}>
-      <StatusBar barStyle='light-content' />
-      {isGradient && <LinearGradient colors={colors.bgGradient} style={styles.container} />}
-      <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
-        {!!header && <View style={styles.containerHeader}>
+    <View style={styles.container}>
+      {urlImageBg?.uri && <ImageBackground style={styles.containerBackground} source={urlImageBg.uri} />}
+      {isGradient && <LinearGradient colors={colors.bgGradient} style={styles.containerGradient} />}
+      <View style={{ zIndex: 3, flex: 1, ...StyleSheet.absoluteFill }}>
+        <StatusBar barStyle='light-content' />
+        <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
           {header}
-        </View>}
-        <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
-          {children}
-        </View>
-        {renderFooter()}
-      </SafeAreaView>
-      <LoadingView color={colors.primaryPink} size={64} isVisible={isLoading} />
-      {!!bottomSheet && bottomSheet()}
-    </ImageBackground>
+          <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
+            {children}
+          </View>
+          {renderFooter()}
+        </SafeAreaView>
+        <LoadingView color={colors.primaryPink} size={64} isVisible={isLoading} />
+        {bottomSheet?.()}
+      </View>
+    </View>
   )
 }
 
@@ -42,12 +41,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  containerContent: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'stretch',
-    position: 'absolute',
+  containerGradient: {
+    flex: 1,
     zIndex: 1,
+  },
+  containerBackground: {
+    flex: 1,
+    zIndex: 2,
+    ...StyleSheet.absoluteFill
+  },
+  containerContent: {
+    flex: 1,
     justifyContent: 'center',
   },
   containerChild: {
@@ -58,18 +62,7 @@ const styles = StyleSheet.create({
     flex: haveFooter ? 0.9 : 1,
   }),
   containerFooter: {
-    flex: 0.1,
-    zIndex: 2
-  },
-  containerHeader: {
-    zIndex: 2
-  },
-  imageBg: {
-    flex: 1,
-    width: getSccreenWidth(),
-    height: getSccreenHeight(),
-    position: 'absolute',
-    zIndex: 1
+    flex: 0.1
   },
 })
 
