@@ -39,6 +39,9 @@ export default {
   titleIntroducePickCategory: 'Pick a category for your next adventure',
   titleCategory: 'Click here',
 
+  //Explore
+  titleExplore: 'Explore',
+
   //Sign Out
   titleSignOut: 'Sign out',
   titleEdit: 'Edit',

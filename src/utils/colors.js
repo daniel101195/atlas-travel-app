@@ -12,5 +12,6 @@ export default {
   grayVeryLight: '#F2F2F2',
   red: 'red',
   close_icon: '#AAA',
-  noti_icon: 'rgba(255, 255, 255, 0.5)'
+  noti_icon: 'rgba(255, 255, 255, 0.5)',
+  bgHeader: '#EBEBEB'
 }

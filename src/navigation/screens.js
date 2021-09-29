@@ -1,6 +1,7 @@
 import { LocalizeString } from '../localize';
 import SignOut from '../screens/SignOut';
-import { icon_discover, icon_log_out } from '../utils/images';
+import { redirect } from '../navigation/helper';
+import { icon_discover, icon_log_out, icon_explore } from '../utils/images';
 
 const screens = {
   dashboard: {
@@ -17,6 +18,9 @@ const screens = {
   },
   discover: {
     name: LocalizeString.titleDiscover
+  },
+  explore: {
+    name: LocalizeString.titleExplore
   },
   signOut: {
     name: LocalizeString.titleSignOut
@@ -35,8 +39,17 @@ const stacks = {
 const sideMenu = [
   {
     name: LocalizeString.titleDiscover,
-    icon: icon_discover
+    icon: icon_discover,
+    onPress: (navigation) => redirect(navigation, screens.discover.name)
   },
+  {
+    name: LocalizeString.titleExplore,
+    icon: icon_explore,
+    onPress: (navigation) => redirect(navigation, screens.explore.name)
+  }
+]
+
+const sideMenuFooter = [
   {
     name: LocalizeString.titleSignOut,
     icon: icon_log_out,
@@ -44,4 +57,4 @@ const sideMenu = [
   }
 ]
 
-export { screens, stacks, sideMenu }
+export { screens, stacks, sideMenu, sideMenuFooter }

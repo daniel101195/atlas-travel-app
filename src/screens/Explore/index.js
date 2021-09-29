@@ -9,7 +9,7 @@ import { LocalizeString } from '../../localize';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { memoDeepEqual } from '../../utils/helpers';
 
-const Discover = (props) => {
+const Explore = (props) => {
   const { isLoading, scrollIndicatorPosition, scrollIndicatorSize, scrollIndicator,
     isShowBottomSheet, isSelected, onChangeBottomSheet, onChangeSelected,
     onToggleDrawer, onSetScrollBarWidth, onSetCompleteBarWidth } = useDiscoverHooks(props, LocalizeString);
@@ -21,7 +21,7 @@ const Discover = (props) => {
           <View style={{ flexBasis: 100 }}>
             <Image source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
           </View>
-          <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleDiscover}</CustomText>
+          <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleExplore}</CustomText>
           <View style={styles.containerIcons}>
             <Icon type='ionicon' name='notifications-outline' size={24} color={colors.noti_icon} style={{ marginEnd: Spacing.M }} />
             <Icon type='ionicon' name='ios-search' size={24} color={colors.noti_icon} />
@@ -88,9 +88,9 @@ const Discover = (props) => {
       isLoading={isLoading}
       header={renderHeader()}
       bottomSheet={renderBottomSheet}>
-      <View style={styles.containerContent}>
+      {/* <View style={styles.containerContent}>
         {renderContent()}
-      </View>
+      </View> */}
     </BaseScreen>
   )
 }
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default memoDeepEqual(Discover)
+export default memoDeepEqual(Explore)

@@ -1,18 +1,20 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useNavigation, useRoute, getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import React, { useContext, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { CustomText, Image, Button } from '../components';
-import { screens, stacks, sideMenu } from './screens';
+import { screens, stacks, sideMenu, sideMenuFooter } from './screens';
 import Dashboard from '../screens/Dashboard';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import Email from '../screens/Email';
 import Discover from '../screens/Discover';
+import Explore from '../screens/Explore';
 import colors from '../utils/colors';
 import { Radius, Spacing } from '../metrics';
 import { scaleSize } from '../utils/spacing';
+import { STATUS_BAR_HEIGHT } from '../utils/dimensions';
 import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';
@@ -114,38 +116,64 @@ const MainDrawerNavigation = () => {
   const renderBody = useCallback(() => {
     const routeName = getFocusedRouteNameFromRoute(route) || '';
     return (
-      sideMenu.map((item, index) => {
-        const isFocused = routeName === item.name;
-        const gradient = isFocused ? colors.bgGradient : colors.bgTransparent;
-        return (
-          <TouchableOpacity onPress={() => item?.onPress(navigation, state)}>
-            <LinearGradient
-              key={index.toString()}
-              colors={gradient}
-              style={styles.containerDrawerItem(isFocused)}>
-              <Image tintColor={isFocused ? colors.white : colors.grayLight} source={item.icon} style={styles.iconMenu} />
-              <CustomText h5 customStyle={{ color: isFocused ? colors.white : colors.gray }}>{item.name}</CustomText>
-            </LinearGradient>
-          </TouchableOpacity>
-        )
-      })
+      <View style={{ marginTop: Spacing.M, flex: 0.7 }}>
+        {sideMenu.map((item, index) => {
+          const isFocused = routeName === item.name;
+          const gradient = isFocused ? colors.bgGradient : colors.bgTransparent;
+          return (
+            <TouchableOpacity key={index.toString()} onPress={() => item?.onPress(navigation, state)}>
+              <LinearGradient
+                colors={gradient}
+                style={styles.containerDrawerItem(isFocused)}>
+                <Image tintColor={isFocused ? colors.white : colors.grayLight} source={item.icon} style={styles.iconMenu} />
+                <CustomText h5 customStyle={{ color: isFocused ? colors.white : colors.gray }}>{item.name}</CustomText>
+              </LinearGradient>
+            </TouchableOpacity>
+          )
+        })}
+      </View>
     )
-  }, [route])
+  }, [route, sideMenu])
+
+  const renderFooter = useCallback(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) || '';
+    return (
+      <View style={{ marginTop: Spacing.M, flex: 0.3 }}>
+        {sideMenuFooter.map((item, index) => {
+          const isFocused = routeName === item.name;
+          const gradient = isFocused ? colors.bgGradient : colors.bgTransparent;
+          return (
+            <TouchableOpacity key={index.toString()} onPress={() => item?.onPress(navigation, state)}>
+              <LinearGradient
+                colors={gradient}
+                style={styles.containerDrawerItem(isFocused)}>
+                <Image tintColor={isFocused ? colors.white : colors.grayLight} source={item.icon} style={styles.iconMenu} />
+                <CustomText h5 customStyle={{ color: isFocused ? colors.white : colors.gray }}>{item.name}</CustomText>
+              </LinearGradient>
+            </TouchableOpacity>
+          )
+        })}
+      </View>
+    )
+  }, [sideMenuFooter, route])
 
   const content = (props) => {
     return (
-      <DrawerContentScrollView {...props}>
+      <View style={{ flex: 1 }} {...props}>
         {header()}
-        {renderSeparator()}
         {renderBody()}
-      </DrawerContentScrollView>
+        {renderSeparator()}
+        {renderFooter()}
+      </View>
     )
   }
 
   return (
     <Drawer.Navigator initialRouteName={screens.discover.name} drawerContent={content}>
       <Drawer.Screen name={screens.discover.name} component={Discover} options={{
-        title: LocalizeString.titleTraveling,
+        headerShown: false
+      }} />
+      <Drawer.Screen name={screens.explore.name} component={Explore} options={{
         headerShown: false
       }} />
     </Drawer.Navigator>
@@ -162,9 +190,10 @@ const App = () => {
 
 const styles = StyleSheet.create({
   containerHeader: {
-    paddingHorizontal: Spacing.L,
-    marginBottom: Spacing.L,
-    alignItems: 'center'
+    paddingTop: Spacing.L * 2.5,
+    alignItems: 'center',
+    backgroundColor: colors.bgHeader,
+    marginTop: - STATUS_BAR_HEIGHT
   },
   containerText: {
     marginTop: Spacing.S,
@@ -197,12 +226,15 @@ const styles = StyleSheet.create({
   separator: {
     height: Spacing.XS,
     marginBottom: Spacing.S,
+    marginHorizontal: Spacing.XL * 2,
+    borderRadius: Radius.M,
     backgroundColor: colors.grayVeryLight
   },
   btnEdit: {
     height: scaleSize(32),
     paddingHorizontal: Spacing.S,
-    marginTop: Spacing.L
+    marginTop: Spacing.L,
+    marginBottom: Spacing.XL
   },
   iconMenu: {
     width: scaleSize(24),
