@@ -1,13 +1,13 @@
 import React from 'react';
 import { Image, StyleSheet, View, Text } from 'react-native';
-import { logo, login_bg } from '../../utils/images';
-import colors from '../../utils/colors';
-import { Spacing, Radius, FontSize } from '../../metrics';
+import { logo, login_bg } from '~/utils/images';
+import colors from '~/utils/colors';
+import { Spacing, Radius, FontSize } from '~/metrics';
 import Buttons from './Buttons';
-import { BaseScreen } from '../../components';
+import { BaseScreen } from '~/components';
 import useDashboardHooks from './hooks';
-import { LocalizeString } from '../../localize';
-import { memoDeepEqual } from '../../utils/helpers';
+import { LocalizeString } from '~/localize';
+import { memoDeepEqual } from '~/utils/helpers';
 
 const Dashboard = (props) => {
   const { onNavigateLogin, onNavigateSignUp, onChangeLanguage } = useDashboardHooks(props);

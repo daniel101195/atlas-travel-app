@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from "react-native";
-import colors from '../../utils/colors';
-import { login_bg_2 } from '../../utils/images';
-import { Input, CustomText, Toggle, BaseScreen, Button } from '../../components';
-import { Radius, Spacing } from '../../metrics';
+import colors from '~/utils/colors';
+import { login_bg_2 } from '~/utils/images';
+import { Input, CustomText, Toggle, BaseScreen, Button } from '~/components';
+import { Radius, Spacing } from '~/metrics';
 import useLoginHooks from './hooks';
-import { LocalizeString } from '../../localize';
-import { memoDeepEqual } from '../../utils/helpers'
+import { LocalizeString } from '~/localize';
+import { memoDeepEqual } from '~/utils/helpers'
 
 const SignIn = (props) => {
   const { isRemember, isLoading, isShowPass, errorMessage, loginData,

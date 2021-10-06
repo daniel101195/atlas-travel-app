@@ -19,12 +19,12 @@ const Explore = (props) => {
       <View style={styles.header}>
         <View style={styles.containerHeader}>
           <View style={{ flexBasis: 100 }}>
-            <Image source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
+            <Image tintColor='#333' source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
           </View>
           <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleExplore}</CustomText>
           <View style={styles.containerIcons}>
-            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.noti_icon} style={{ marginEnd: Spacing.M }} />
-            <Icon type='ionicon' name='ios-search' size={24} color={colors.noti_icon} />
+            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.black} style={{ marginEnd: Spacing.M }} />
+            <Icon type='ionicon' name='ios-search' size={24} color={colors.black} />
           </View>
         </View>
         <View style={styles.line} />
@@ -86,7 +86,9 @@ const Explore = (props) => {
   return (
     <BaseScreen
       isLoading={isLoading}
+      isGradient={false}
       header={renderHeader()}
+      isLight={false}
       bottomSheet={renderBottomSheet}>
       {/* <View style={styles.containerContent}>
         {renderContent()}
@@ -126,12 +128,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.L,
   },
   line: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
     height: 2,
   },
   txtFooter: {
     textAlign: 'center',
-    color: colors.white,
+    color: colors.black,
     flexBasis: 100,
   },
   txtPickCategory: {

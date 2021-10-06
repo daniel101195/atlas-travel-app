@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { LoadingView, ImageBackground } from '../../components';
-import { memoDeepEqual } from '../../utils/helpers';
-import colors from '../../utils/colors';
+import { LoadingView, ImageBackground } from '~/components';
+import { memoDeepEqual } from '~/utils/helpers';
+import colors from '~/utils/colors';
 
 const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
-  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet }) => {
+  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, isLight = true }) => {
 
   const renderFooter = useCallback(() => {
     if (!footer) return;
@@ -22,7 +22,6 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
       {urlImageBg?.uri && <ImageBackground style={styles.containerBackground} source={urlImageBg.uri} />}
       {isGradient && <LinearGradient colors={colors.bgGradient} style={styles.containerGradient} />}
       <View style={{ zIndex: 3, flex: 1, ...StyleSheet.absoluteFill }}>
-        <StatusBar barStyle='light-content' />
         <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
           {header}
           <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>

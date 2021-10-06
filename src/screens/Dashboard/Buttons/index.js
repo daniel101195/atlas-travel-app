@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { FontSize, Radius, Spacing } from '../../../metrics';
-import colors from "../../../utils/colors"
+import colors from "~/utils/colors"
 
 const Buttons = ({ onLogin, onSignUp }) => {
 

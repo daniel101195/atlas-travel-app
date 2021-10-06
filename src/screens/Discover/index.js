@@ -7,7 +7,7 @@ import { Radius, Spacing } from '../../metrics';
 import useDiscoverHooks from './hooks';
 import { LocalizeString } from '../../localize';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { memoDeepEqual } from '../../utils/helpers';
+import { memoDeepEqual } from '~/utils/helpers';
 
 const Discover = (props) => {
   const { isLoading, scrollIndicatorPosition, scrollIndicatorSize, scrollIndicator,
@@ -87,6 +87,7 @@ const Discover = (props) => {
     <BaseScreen
       isLoading={isLoading}
       header={renderHeader()}
+      isLight={true}
       bottomSheet={renderBottomSheet}>
       <View style={styles.containerContent}>
         {renderContent()}

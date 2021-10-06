@@ -14,7 +14,7 @@ import Explore from '../screens/Explore';
 import colors from '../utils/colors';
 import { Radius, Spacing } from '../metrics';
 import { scaleSize } from '../utils/spacing';
-import { STATUS_BAR_HEIGHT } from '../utils/dimensions';
+import { STATUS_BAR_HEIGHT, isIphoneX } from '../utils/dimensions';
 import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';
@@ -93,7 +93,7 @@ const MainDrawerNavigation = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const header = useCallback(() => {
+  const renderHeader = useCallback(() => {
     const { photoURL, email, displayName } = state?.userInfo || {};
     return (
       <View style={styles.containerHeader}>
@@ -160,7 +160,7 @@ const MainDrawerNavigation = () => {
   const content = (props) => {
     return (
       <View style={{ flex: 1 }} {...props}>
-        {header()}
+        {renderHeader()}
         {renderBody()}
         {renderSeparator()}
         {renderFooter()}
@@ -190,7 +190,7 @@ const App = () => {
 
 const styles = StyleSheet.create({
   containerHeader: {
-    paddingTop: Spacing.L * 2.5,
+    paddingTop: STATUS_BAR_HEIGHT * 2.5,
     alignItems: 'center',
     backgroundColor: colors.bgHeader,
     marginTop: - STATUS_BAR_HEIGHT
