@@ -41,6 +41,7 @@ export default {
 
   //Explore
   titleExplore: 'Explore',
+  titleActivities: 'Activities',
 
   //Sign Out
   titleSignOut: 'Sign out',

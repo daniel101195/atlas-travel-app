@@ -1,30 +1,18 @@
-import { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Spacing } from '../../metrics';
+import { useCallback, useState, useEffect, useRef } from "react";
 import { Animated } from "react-native";
+import { Spacing } from "~/metrics";
+import { getSccreenWidth } from "~/utils/helpers";
+import { scaleSize } from "~/utils/spacing";
 
 const useExploreHooks = (props) => {
+  const pagerRef = useRef();
+  const [startValue, ] = useState(new Animated.Value(0));
+  const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [isShowBottomSheet, setShowBottomSheet] = useState(false);
   const [isSelected, setSelected] = useState(false);
   const [completeScrollBarWidth, setCompleteScrollBarWidth] = useState(1);
   const [visibleScrollBarWidth, setVisibleScrollBarWidth] = useState(0);
-  const scrollIndicator = useRef(new Animated.Value(0)).current;
-  const scrollIndicatorSize =
-    completeScrollBarWidth > visibleScrollBarWidth
-      ? (visibleScrollBarWidth * (visibleScrollBarWidth / 2)) / completeScrollBarWidth
-      : visibleScrollBarWidth;
-  const difference =
-    visibleScrollBarWidth > scrollIndicatorSize
-      ? visibleScrollBarWidth - scrollIndicatorSize - Spacing.M * 2
-      : 1;
-  const scrollIndicatorPosition = Animated.multiply(
-    scrollIndicator,
-    visibleScrollBarWidth / completeScrollBarWidth
-  ).interpolate({
-    inputRange: [0, difference],
-    outputRange: [0, difference],
-    extrapolate: 'clamp'
-  });
 
   const onChangeLoading = useCallback((value) => {
     setLoading(value)
@@ -50,20 +38,42 @@ const useExploreHooks = (props) => {
     setSelected(!isSelected)
   }, [isSelected])
 
+  const onChangeTab = (index) => {
+    setCurrentTab(index);
+  }
+
+  const onAnimationTab = () => {
+    Animated.timing(startValue, {
+      toValue: currentTab === 0 ? scaleSize(0) : (getSccreenWidth() / 2) - Spacing.L,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  const onTransitionTab = () => {
+    pagerRef?.current?.setPage(currentTab);
+  }
+
   //----------------------------- Side Effects -----------------------------
 
+  useEffect(() => {
+    onAnimationTab();
+    onTransitionTab();
+  }, [currentTab])
+
   return {
+    pagerRef,
+    startValue,
     isLoading,
-    scrollIndicatorPosition,
-    scrollIndicatorSize,
-    scrollIndicator,
     isShowBottomSheet,
     isSelected,
+    currentTab,
     onToggleDrawer,
     onSetScrollBarWidth,
     onSetCompleteBarWidth,
     onChangeBottomSheet,
-    onChangeSelected
+    onChangeSelected,
+    onChangeTab
   }
 }
 

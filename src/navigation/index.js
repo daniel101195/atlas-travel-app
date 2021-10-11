@@ -14,7 +14,7 @@ import Explore from '../screens/Explore';
 import colors from '../utils/colors';
 import { Radius, Spacing } from '../metrics';
 import { scaleSize } from '../utils/spacing';
-import { STATUS_BAR_HEIGHT, isIphoneX } from '../utils/dimensions';
+import { STATUS_BAR_HEIGHT } from '../utils/dimensions';
 import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';

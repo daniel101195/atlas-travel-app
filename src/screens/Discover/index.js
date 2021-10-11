@@ -87,7 +87,6 @@ const Discover = (props) => {
     <BaseScreen
       isLoading={isLoading}
       header={renderHeader()}
-      isLight={true}
       bottomSheet={renderBottomSheet}>
       <View style={styles.containerContent}>
         {renderContent()}

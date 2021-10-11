@@ -13,5 +13,6 @@ export default {
   red: 'red',
   close_icon: '#AAA',
   noti_icon: 'rgba(255, 255, 255, 0.5)',
-  bgHeader: '#EBEBEB'
+  bgHeader: '#EBEBEB',
+  mediumBlack: '#333'
 }

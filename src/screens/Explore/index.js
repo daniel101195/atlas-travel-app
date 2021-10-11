@@ -1,98 +1,107 @@
 import React, { useCallback } from 'react';
-import { Animated, FlatList, StyleSheet, View, TouchableOpacity } from "react-native";
-import colors from '../../utils/colors';
-import { icon_hamburger } from '../../utils/images';
-import { CustomText, Icon, BaseScreen, Image, BottomSheet, RadioButton } from '../../components';
-import { Radius, Spacing } from '../../metrics';
+import { Animated, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import colors from '~/utils/colors';
+import { icon_hamburger } from '~/utils/images';
+import { CustomText, Icon, BaseScreen, Image, BottomSheet, RadioButton } from '~/components';
+import { Spacing } from '~/metrics';
 import useDiscoverHooks from './hooks';
-import { LocalizeString } from '../../localize';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { memoDeepEqual } from '../../utils/helpers';
+import { LocalizeString } from '~/localize';
+import { memoDeepEqual } from '~/utils/helpers';
+import { scaleSize } from '~/utils/spacing';
+import PagerView from 'react-native-pager-view';
 
 const Explore = (props) => {
-  const { isLoading, scrollIndicatorPosition, scrollIndicatorSize, scrollIndicator,
-    isShowBottomSheet, isSelected, onChangeBottomSheet, onChangeSelected,
-    onToggleDrawer, onSetScrollBarWidth, onSetCompleteBarWidth } = useDiscoverHooks(props, LocalizeString);
+  const { isLoading, isShowBottomSheet, isSelected, startValue, currentTab, pagerRef,
+    onChangeBottomSheet, onChangeSelected, onToggleDrawer, onChangeTab } = useDiscoverHooks(props, LocalizeString);
 
   const renderHeader = useCallback(() => {
     return (
       <View style={styles.header}>
         <View style={styles.containerHeader}>
           <View style={{ flexBasis: 100 }}>
-            <Image tintColor='#333' source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
+            <Image tintColor={colors.mediumBlack} source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
           </View>
           <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleExplore}</CustomText>
           <View style={styles.containerIcons}>
-            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.black} style={{ marginEnd: Spacing.M }} />
-            <Icon type='ionicon' name='ios-search' size={24} color={colors.black} />
+            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.mediumBlack} style={{ marginEnd: Spacing.M }} />
+            <Icon type='ionicon' name='ios-search' size={24} color={colors.mediumBlack} />
           </View>
         </View>
-        <View style={styles.line} />
+        {renderTabs()}
       </View>
     )
-  }, [])
+  }, [currentTab])
 
-  const renderList = () => {
+  const renderTabs = useCallback(() => {
     return (
       <View>
-        <FlatList
-          data={[1, 2, 3, 4, 5, 6]}
-          horizontal
-          onContentSizeChange={onSetCompleteBarWidth}
-          onLayout={({ nativeEvent: { layout: { width } } }) => onSetScrollBarWidth(width)}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollIndicator } } }],
-            { useNativeDriver: false }
-          )}
-          scrollEventThrottle={16}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <View style={{ height: 200, width: 400, backgroundColor: "#CCC", marginHorizontal: 6 }} />
-          )} />
-        <View style={styles.containerIndicator}>
-          <Animated.View style={{ ...styles.indicator, width: scrollIndicatorSize, transform: [{ translateX: scrollIndicatorPosition }] }} />
+        <View style={styles.containerTabs}>
+          <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab(0)}>
+            <CustomText customStyle={styles.txtTab(currentTab === 0)}>{LocalizeString.titleExplore}</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab(1)}>
+            <CustomText customStyle={styles.txtTab(currentTab === 1)}>{LocalizeString.titleActivities}</CustomText>
+          </TouchableOpacity>
         </View>
+        <Animated.View
+          style={{
+            ...styles.indicator,
+            transform: [
+              {
+                translateX: startValue,
+              }
+            ],
+          }} />
       </View>
     )
-  }
+  }, [currentTab])
 
   const renderContent = useCallback(() => {
     return (
-      <View>
-        <CustomText h2 customStyle={styles.txtPickCategory}>{LocalizeString.titleIntroducePickCategory}</CustomText>
-        <TouchableOpacity onPress={onChangeBottomSheet}>
-          <CustomText h2 customStyle={{ ...styles.txtPickCategory, color: Colors.white }}>{LocalizeString.titleCategory}</CustomText>
-        </TouchableOpacity>
-      </View>
-    )
-  }, [props])
+      <PagerView
+        ref={pagerRef}
+        style={styles.pagerView}
+        initialPage={0}>
+        <View key="0" style={{ flex: 1 }}>
+          <FlatList
+            style={{ flex: 1, alignSelf: 'stretch' }}
+            contentContainerStyle={{ paddingBottom: Spacing.M }}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            data={[1, 2, 3, 4]}
+            renderItem={renderItem}
+            ListHeaderComponent={() => <View style={{ flex: 1, height: 150, backgroundColor: 'blue', marginBottom: Spacing.S }} />}
+            ItemSeparatorComponent={() => <View style={{ marginVertical: Spacing.S }} />}
+            keyExtractor={(item) => item.toString()} />
+        </View>
+        <View key="1" style={{ flex: 1, backgroundColor: "green" }}>
 
-  const renderBottomSheet = useCallback(() => {
-    return (
-      <BottomSheet isVisible={isShowBottomSheet} onChangeVisible={onChangeBottomSheet}>
-        {['Outdoor', 'Indoor', 'Adventure'].map((item, index) => (
-          <RadioButton
-            key={index.toString()}
-            onPress={onChangeSelected}
-            isSelected={isSelected}
-            text={item}
-            textStyle={{  }}
-            containerStyle={{ marginVertical: Spacing.S }} />
-        ))}
-      </BottomSheet>
+        </View>
+      </PagerView>
     )
-  }, [isShowBottomSheet, isSelected])
+  }, [pagerRef])
+
+  const renderItem = ({ item, index }) => {
+    if (item === 1 || item === 4) {
+      return <View style={{ flex: 0.5, height: 100, backgroundColor: 'green', marginEnd: item === 1 ? Spacing.XS : scaleSize(0) }}>
+
+      </View>
+    }
+    if (item === 2 || item === 3) {
+      return <View style={{ flex: 0.5, height: 200, backgroundColor: 'red', marginEnd: Spacing.XS }}>
+
+      </View>
+    }
+  }
 
   return (
     <BaseScreen
       isLoading={isLoading}
       isGradient={false}
-      header={renderHeader()}
-      isLight={false}
-      bottomSheet={renderBottomSheet}>
-      {/* <View style={styles.containerContent}>
+      header={renderHeader()}>
+      <Animated.View style={styles.containerContent}>
         {renderContent()}
-      </View> */}
+      </Animated.View>
     </BaseScreen>
   )
 }
@@ -101,25 +110,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  containerIndicator: {
-    marginTop: Spacing.M,
-    backgroundColor: "#CCC",
-    height: 6,
-    borderRadius: Radius.M,
-    marginHorizontal: Spacing.M
-  },
   containerIcons: {
     flexDirection: 'row',
     flexBasis: 100,
     justifyContent: 'flex-end'
   },
+  containerTabs: {
+    height: scaleSize(42),
+    flexDirection: 'row'
+  },
   containerHeader: {
     flexDirection: 'row',
-    marginBottom: Spacing.L,
+    marginBottom: Spacing.S,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   containerContent: {
+    flex: 1,
+    backgroundColor: colors.grayLight,
     paddingHorizontal: Spacing.M,
     paddingTop: Spacing.XL * 2
   },
@@ -133,22 +141,29 @@ const styles = StyleSheet.create({
   },
   txtFooter: {
     textAlign: 'center',
-    color: colors.black,
+    color: colors.mediumBlack,
     flexBasis: 100,
-  },
-  txtPickCategory: {
-    color: colors.noti_icon,
-    marginVertical: Spacing.S
   },
   icHambuger: {
     width: 24,
     height: 24,
   },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   indicator: {
-    height: 6,
-    width: 100,
-    borderRadius: Radius.M,
-    backgroundColor: "#AAA",
+    height: 2,
+    backgroundColor: 'blue',
+    width: '50%'
+  },
+  txtTab: (isFocused) => ({
+    fontWeight: isFocused ? 'bold' : 'normal',
+    color: colors.mediumBlack
+  }),
+  pagerView: {
+    flex: 1,
   }
 })
 

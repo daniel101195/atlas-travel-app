@@ -1,19 +1,14 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import Spinner from 'react-native-spinkit';
-import { Radius, Spacing } from '../../metrics';
-import colors from '../../utils/colors';
-import { memoDeepEqual } from '../../utils/helpers';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { Radius, Spacing } from '~/metrics';
+import colors from '~/utils/colors';
+import { memoDeepEqual } from '~/utils/helpers';
 
-const LoadingView = ({ isVisible = true, size, color, type = 'ThreeBounce' }) => {
+const LoadingView = ({ isVisible = true }) => {
 
   return (
     isVisible ? <View style={styles.container}>
-      <Spinner
-        isVisible={true}
-        size={size}
-        type={type}
-        color={color} />
+      <ActivityIndicator size='large' color={colors.white} />
     </View> : null
   )
 }
@@ -23,7 +18,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    zIndex: 9999,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)'

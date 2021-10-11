@@ -1,10 +1,10 @@
-import { Dimensions } from 'react-native';
 import { DEVICE_HEIGHT } from './dimensions';
+import { getSccreenWidth } from '~/utils/helpers';
 
 const guidelineBaseWidth = 375;
 const guidelineBaseHeight = 812;
 
-const DEVICE_WIDTH = Dimensions.get('window').width;
+const DEVICE_WIDTH = getSccreenWidth();
 
 export const scaleSize = size => (DEVICE_WIDTH / guidelineBaseWidth) * size;
 export const scaleHeight = size => (DEVICE_HEIGHT / guidelineBaseHeight) * size;

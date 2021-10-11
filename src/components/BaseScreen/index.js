@@ -6,7 +6,7 @@ import { memoDeepEqual } from '~/utils/helpers';
 import colors from '~/utils/colors';
 
 const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
-  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, isLight = true }) => {
+  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet }) => {
 
   const renderFooter = useCallback(() => {
     if (!footer) return;
@@ -29,7 +29,7 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
           </View>
           {renderFooter()}
         </SafeAreaView>
-        <LoadingView color={colors.primaryPink} size={64} isVisible={isLoading} />
+        <LoadingView isVisible={isLoading} />
         {bottomSheet?.()}
       </View>
     </View>
