@@ -615,7 +615,7 @@ PODS:
     - React-jsi (= 0.64.1)
     - React-perflogger (= 0.64.1)
   - React-jsinspector (0.64.1)
-  - react-native-pager-view (5.4.6):
+  - react-native-pager-view (5.4.9):
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
@@ -685,7 +685,7 @@ PODS:
     - React-perflogger (= 0.64.1)
   - ReactNativeLocalization (2.1.7):
     - React-Core
-  - RealmJS (10.8.0):
+  - RealmJS (10.11.0):
     - GCDWebServer
     - React
   - RNCMaskedView (0.1.11):
@@ -694,20 +694,20 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNFBApp (12.9.0):
+  - RNFBApp (12.9.3):
     - Firebase/CoreOnly (= 8.4.0)
     - React-Core
-  - RNFBAuth (12.9.0):
+  - RNFBAuth (12.9.3):
     - Firebase/Auth (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBFirestore (12.9.0):
+  - RNFBFirestore (12.9.3):
     - Firebase/Firestore (= 8.4.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNReanimated (2.2.2):
+  - RNReanimated (2.0.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -736,7 +736,7 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.8.0):
+  - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
   - RNVectorIcons (8.1.0):
@@ -989,7 +989,7 @@ SPEC CHECKSUMS:
   React-jsi: 5de8204706bd872b78ea646aee5d2561ca1214b6
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
-  react-native-pager-view: b90963d848e777def6714ab7fd40d02fa797e930
+  react-native-pager-view: 3ee7d4c7697fb3ef788346e834a60cca97ed8540
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675
   React-RCTActionSheet: fc376be462c9c8d6ad82c0905442fd77f82a9d2a
@@ -1004,15 +1004,15 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: ff951a0c241bfaefc4940a3f1f1a229e7cb32fa6
   ReactCommon: bedc99ed4dae329c4fcf128d0c31b9115e5365ca
   ReactNativeLocalization: 90a1181b7672309701dd7e5364fbf587319d41c6
-  RealmJS: 7271bc9f8579716260511cb43b0fb6b0321ce206
+  RealmJS: de65cc7c3ea041750d66beaa28b30585222c3d94
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
-  RNFBApp: ccc66618cb7e15a588bc40567565277d1ca41588
-  RNFBAuth: bb56c08cd91cc604b54b4d7cfe6ec18e4255cb36
-  RNFBFirestore: b547d3485ea920af24eb6b419341e64469e5aa2a
+  RNFBApp: 0e6f1251babf13064e5c426e627239eb68233119
+  RNFBAuth: 2d83f4fe0608c4d5ee4b3904da4ac4a08a02e888
+  RNFBFirestore: 2e865a2c4124b6f0e267c9d719ee9a5de54d93d3
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNReanimated: 241c586663f44f19a53883c63375fdd041253960
-  RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
+  RNReanimated: 64f6c5789f82818c07ba3c71864b73619cb23c76
+  RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815

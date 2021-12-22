@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "all": "watchman watch-del-all && rm -rf package-lock.json && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && npm install && cd ios && rm -rf Pods && rm -rf Podfile.lock && pod install && cd ..",
+    "all": "watchman watch-del-all && rm -rf package-lock.json && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock && pod install && cd ..",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
