@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Animated, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import colors from '~/utils/colors';
 import { icon_hamburger } from '~/utils/images';
-import { CustomText, Icon, BaseScreen, Image, BottomSheet, RadioButton } from '~/components';
+import { CustomText, Icon, BaseScreen, Image } from '~/components';
 import { Spacing } from '~/metrics';
 import useDiscoverHooks from './hooks';
 import { LocalizeString } from '~/localize';

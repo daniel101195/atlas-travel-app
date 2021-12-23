@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { screens } from '../../navigation/screens';
-import { redirect, REDIRECT_TYPE } from '../../navigation/helper';
+import { screens } from '~/navigation/screens';
+import { redirect, REDIRECT_TYPE } from '~/navigation/helper';
 import { useNavigation } from '@react-navigation/native';
-import { onChangeLang, getCurrentLang, LANGUAGE } from '../../localize';
-import { GlobalContext } from '../../context';
-import { changeLanguage } from '../../context/actions';
-import { onAuthStateChanged } from '../../api';
+import { onChangeLang, getCurrentLang, LANGUAGE } from '~/localize';
+import { GlobalContext } from '~/context';
+import { changeLanguage } from '~/context/actions';
+import { onAuthStateChanged } from '~/api';
+import { getUserInfo } from '~/storage';
 
 const useDashboardHooks = (props) => {
   const { dispatch } = useContext(GlobalContext);
@@ -31,7 +32,14 @@ const useDashboardHooks = (props) => {
     initializing && setInitializing(false);
   }
 
+  const onGetUserInfo = async () => {
+    const data = await getUserInfo();
+  }
+
+  //----------------------------- Side Effects -----------------------------
+
   useEffect(() => {
+    onGetUserInfo();
     const subscriber = onAuthStateChanged(onAuthStateChange);
     return subscriber; // unsubscribe on unmount
   }, []);
