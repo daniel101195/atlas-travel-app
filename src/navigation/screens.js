@@ -22,6 +22,9 @@ const screens = {
   explore: {
     name: LocalizeString.titleExplore
   },
+  messaging: {
+    name: LocalizeString.titleMessage
+  },
   signOut: {
     name: LocalizeString.titleSignOut
   }
@@ -46,7 +49,12 @@ const sideMenu = [
     name: LocalizeString.titleExplore,
     icon: icon_explore,
     onPress: (navigation) => redirect(navigation, screens.explore.name)
-  }
+  },
+  {
+    name: LocalizeString.titleMessage,
+    icon: icon_explore,
+    onPress: (navigation) => redirect(navigation, screens.messaging.name)
+  },
 ]
 
 const sideMenuFooter = [

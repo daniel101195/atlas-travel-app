@@ -1,11 +1,12 @@
+import { scaleSize, scaleFont } from '~/utils/spacing';
 
 const Spacing = {
-  XXS: 2,
-  XS: 4,
-  S: 8,
-  M: 16,
-  L: 20,
-  XL: 24
+  XXS: scaleSize(2),
+  XS: scaleSize(4),
+  S: scaleSize(8),
+  M: scaleSize(16),
+  L: scaleSize(20),
+  XL: scaleSize(24)
 }
 
 const Radius = {

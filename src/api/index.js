@@ -13,7 +13,8 @@ const ERRORS_FIREBASE = {
 }
 
 const FIRESTORE_COLLECTIONS = {
-  USERS: 'Users'
+  USERS: 'Users',
+  MESSAGING: 'Messaging'
 }
 
 const onAuthStateChanged = (callback = () => { }) => {
@@ -99,4 +100,25 @@ const onSetUserInfo = ({ userInfo = {} }) => {
   })
 }
 
-export { onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onAuthStateChanged, onSetUserInfo, onGetUserInfo }
+const onGetUserMessaging = () => {
+  return new Promise((resolve, reject) => {
+    firestore().collection(FIRESTORE_COLLECTIONS.MESSAGING)
+    .where('participants', 'array-contains', 'viet@gmail.com')
+    .get()
+    .then((snapshot) => {
+      if (!snapshot.empty) {
+        const messages = [];
+        snapshot.forEach(doc => {
+          messages.push(doc.data());
+        });
+        resolve(messages);
+      }
+    })
+    .catch(error => {
+      console.log('===>onGetUserMessaging: ', error);
+      error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+    })
+  })
+}
+
+export { onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onAuthStateChanged, onSetUserInfo, onGetUserInfo, onGetUserMessaging }

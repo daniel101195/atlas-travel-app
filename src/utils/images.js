@@ -1,8 +1,12 @@
 
-const login_bg = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Flogin_bg.png?alt=media&token=eeec1640-d7cd-4886-b595-d907f4f74ba8' }
-const logo = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Flogo.png?alt=media&token=2ada8bf0-d4b4-4e46-bf5d-b562a62724a5' }
-const sign_up_bg = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fimg-sign-up.png?alt=media&token=e692a9d9-91e2-4ec9-84f0-00cf8418bf46' }
-const login_bg_2 = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fimg-login.png?alt=media&token=a7feb077-dfc0-4c49-9590-8f71922dc062' }
+const login_bg = require('~/assets/images/bg_dashboard.png')
+// { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Flogin_bg.png?alt=media&token=eeec1640-d7cd-4886-b595-d907f4f74ba8' }
+const logo = require('~/assets/images/logo.png')
+// { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Flogo.png?alt=media&token=2ada8bf0-d4b4-4e46-bf5d-b562a62724a5' }
+const sign_up_bg = require('~/assets/images/bg_sign_up.png')
+// { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fimg-sign-up.png?alt=media&token=e692a9d9-91e2-4ec9-84f0-00cf8418bf46' }
+const login_bg_2 = require('~/assets/images/bg_sign_in.png')
+// { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fimg-login.png?alt=media&token=a7feb077-dfc0-4c49-9590-8f71922dc062' }
 const icon_send_email = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Ficon_send_email.png?alt=media&token=e6c235c6-479f-4ca9-8bbf-87cc4ea8d937' }
 const icon_hamburger = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_hambuger.png?alt=media&token=57635a6b-88b1-4170-9664-2f988d133592' }
 const icon_log_out = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_log_out.png?alt=media&token=8cc1ea5e-225d-443f-9414-883bc33d11f2' }

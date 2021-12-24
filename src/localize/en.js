@@ -43,6 +43,9 @@ export default {
   titleExplore: 'Explore',
   titleActivities: 'Activities',
 
+  //Message
+  titleMessage: 'Messaging',
+
   //Sign Out
   titleSignOut: 'Sign out',
   titleEdit: 'Edit',

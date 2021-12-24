@@ -10,6 +10,8 @@ import Image from './Image';
 import BottomSheet from './BottomSheet';
 import RadioButton from './RadioButton';
 import ImageBackground from './ImageBackground';
+import Header from './Header';
+import FloatingButton from './FloatingButton';
 
 export { 
   Input, 
@@ -23,5 +25,7 @@ export {
   Image,
   BottomSheet,
   RadioButton,
-  ImageBackground
+  ImageBackground,
+  Header,
+  FloatingButton
 }

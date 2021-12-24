@@ -20,6 +20,7 @@ import FlashMessage from "react-native-flash-message";
 import { LocalizeString } from '../localize';
 import { GlobalContext } from '../context';
 import LinearGradient from 'react-native-linear-gradient';
+import Messaging from '~/screens/Messaging';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -174,6 +175,9 @@ const MainDrawerNavigation = () => {
         headerShown: false
       }} />
       <Drawer.Screen name={screens.explore.name} component={Explore} options={{
+        headerShown: false
+      }} />
+      <Drawer.Screen name={screens.messaging.name} component={Messaging} options={{
         headerShown: false
       }} />
     </Drawer.Navigator>

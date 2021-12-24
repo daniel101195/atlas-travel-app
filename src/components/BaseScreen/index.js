@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { LoadingView, ImageBackground } from '~/components';
-import { memoDeepEqual } from '~/utils/helpers';
+import { LoadingView, ImageBackground, FloatingButton } from '~/components';
 import colors from '~/utils/colors';
 
-const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
-  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet }) => {
+const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {}, onPressFloating = () => { },
+  urlImageBg, isGradient = true, isShowFloating = false, containerChldrenStyle = {}, bottomSheet }) => {
 
   const renderFooter = useCallback(() => {
     if (!footer) return;
@@ -17,10 +16,31 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
     )
   }, [footer])
 
+  const renderFloatingButton = useCallback(() => {
+    if (!isShowFloating) return null
+    return (
+      <FloatingButton onPress={onPressFloating} />
+    )
+  }, [isShowFloating])
+
+  const renderBackground = useCallback(() => {
+    if (!urlImageBg) return null
+    return (
+      <ImageBackground style={styles.containerBackground} source={urlImageBg} />
+    )
+  }, [urlImageBg])
+
+  const renderGradient = useCallback(() => {
+    if (!isGradient) return null
+    return (
+      <LinearGradient colors={colors.bgGradient} style={styles.containerGradient} />
+    )
+  }, [isGradient])
+
   return (
     <View style={styles.container}>
-      {urlImageBg?.uri && <ImageBackground style={styles.containerBackground} source={urlImageBg.uri} />}
-      {isGradient && <LinearGradient colors={colors.bgGradient} style={styles.containerGradient} />}
+      {renderBackground()}
+      {renderGradient()}
       <View style={{ zIndex: 3, flex: 1, ...StyleSheet.absoluteFill }}>
         <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
           {header}
@@ -28,6 +48,7 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
             {children}
           </View>
           {renderFooter()}
+          {renderFloatingButton()}
         </SafeAreaView>
         <LoadingView isVisible={isLoading} />
         {bottomSheet?.()}
@@ -65,4 +86,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default memoDeepEqual(BaseScreen)
+export default memo(BaseScreen)
