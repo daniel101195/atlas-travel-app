@@ -1,8 +1,14 @@
 import Navigation from './src/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GlobalProvider } from './src/context';
+import { updateLocaleDayJs } from '~/utils/time';
 
 const App = () => {
+
+  useEffect(() => {
+    updateLocaleDayJs();
+  }, [])
+
   return (
     <GlobalProvider>
       {Navigation()}

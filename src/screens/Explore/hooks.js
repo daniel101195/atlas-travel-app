@@ -6,7 +6,7 @@ import { scaleSize } from "~/utils/spacing";
 
 const useExploreHooks = (props) => {
   const pagerRef = useRef();
-  const [startValue, ] = useState(new Animated.Value(0));
+  const [startValue,] = useState(new Animated.Value(0));
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [isShowBottomSheet, setShowBottomSheet] = useState(false);
@@ -51,14 +51,20 @@ const useExploreHooks = (props) => {
   }
 
   const onTransitionTab = () => {
-    pagerRef?.current?.setPage(currentTab);
+    pagerRef?.current?.setPage?.(currentTab);
+  }
+
+  const onPageSelected = (event) => {
+    event?.nativeEvent?.position !== currentTab && setCurrentTab(+event?.nativeEvent?.position)
   }
 
   //----------------------------- Side Effects -----------------------------
 
   useEffect(() => {
-    onAnimationTab();
-    onTransitionTab();
+    if (typeof currentTab === 'number') {
+      onAnimationTab();
+      onTransitionTab();
+    }
   }, [currentTab])
 
   return {
@@ -73,7 +79,8 @@ const useExploreHooks = (props) => {
     onSetCompleteBarWidth,
     onChangeBottomSheet,
     onChangeSelected,
-    onChangeTab
+    onChangeTab,
+    onPageSelected
   }
 }
 

@@ -1,7 +1,7 @@
 import { LocalizeString } from '../localize';
 import SignOut from '../screens/SignOut';
 import { redirect } from '../navigation/helper';
-import { icon_discover, icon_log_out, icon_explore } from '../utils/images';
+import { icon_discover, icon_log_out, icon_explore, icon_messaging } from '../utils/images';
 
 const screens = {
   dashboard: {
@@ -52,7 +52,7 @@ const sideMenu = [
   },
   {
     name: LocalizeString.titleMessage,
-    icon: icon_explore,
+    icon: icon_messaging,
     onPress: (navigation) => redirect(navigation, screens.messaging.name)
   },
 ]

@@ -3,7 +3,8 @@ import globalReducer from './reducer';
 
 export const initialState = {
   lang: 'en',
-  userInfo: null
+  userInfo: null,
+  messages: []
 }
 
 export const GlobalContext = createContext(initialState);

@@ -9,3 +9,8 @@ export const updateUserInfo = (userInfo) => ({
   type: actionType.UPDATE_USER_INFO,
   userInfo
 })
+
+export const updateMessages = (messages) => ({
+  type: actionType.UPDATE_MESSAGES,
+  messages
+})

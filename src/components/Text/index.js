@@ -5,8 +5,8 @@ import { scaleFont } from '../../utils/spacing';
 import colors from '../../utils/colors';
 import { memoDeepEqual } from '../../utils/helpers';
 
-const CustomText = ({ children, h1, h2, h3, h4, h5, bold,
-  semiBold, italic, customStyle, containerStyle, onPress }) => {
+const CustomText = ({ children, h1, h2, h3, h4, h5, bold, numLine = 2, 
+  semiBold, italic, customStyle, containerStyle, onPress, ellipsizeMode = 'tail' }) => {
 
   const getFontSize = () => {
     if (h1) return scaleFont(FontSize.H1);
@@ -28,7 +28,7 @@ const CustomText = ({ children, h1, h2, h3, h4, h5, bold,
     onPress ? <Pressable onPress={onPress} style={{ ...styles.containerUnderline, ...containerStyle }}>
       <Text style={{ fontFamily: getFont(), fontSize: getFontSize(), color: colors.grayMedium, ...customStyle }}>
         {children}</Text>
-    </Pressable> : <Text style={{ fontFamily: getFont(), fontSize: getFontSize(), color: colors.grayMedium, ...customStyle }}>{children}</Text>
+    </Pressable> : <Text numberOfLines={numLine} ellipsizeMode={ellipsizeMode} style={{ fontFamily: getFont(), fontSize: getFontSize(), color: colors.grayMedium, ...customStyle }}>{children}</Text>
   )
 }
 

@@ -2,6 +2,9 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { renderErrorMessage, renderSuccessMessage } from '../utils/helpers';
 import { LocalizeString } from '../localize';
+import { useContext } from 'react';
+import { GlobalContext } from '~/context';
+import { updateMessages } from '~/context/actions';
 
 const ERRORS_FIREBASE = {
   'auth/user-not-found': LocalizeString.errorUserNotFound,
@@ -100,25 +103,5 @@ const onSetUserInfo = ({ userInfo = {} }) => {
   })
 }
 
-const onGetUserMessaging = () => {
-  return new Promise((resolve, reject) => {
-    firestore().collection(FIRESTORE_COLLECTIONS.MESSAGING)
-    .where('participants', 'array-contains', 'viet@gmail.com')
-    .get()
-    .then((snapshot) => {
-      if (!snapshot.empty) {
-        const messages = [];
-        snapshot.forEach(doc => {
-          messages.push(doc.data());
-        });
-        resolve(messages);
-      }
-    })
-    .catch(error => {
-      console.log('===>onGetUserMessaging: ', error);
-      error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
-    })
-  })
-}
-
-export { onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onAuthStateChanged, onSetUserInfo, onGetUserInfo, onGetUserMessaging }
+export { FIRESTORE_COLLECTIONS, onSignIn, onSignUp, onUpdateUserProfile, onSignOut, 
+  onAuthStateChanged, onSetUserInfo, onGetUserInfo }

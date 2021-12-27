@@ -12,6 +12,7 @@ const icon_hamburger = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlas
 const icon_log_out = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_log_out.png?alt=media&token=8cc1ea5e-225d-443f-9414-883bc33d11f2' }
 const icon_discover = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_discover.png?alt=media&token=eb41a056-43cd-42b1-b003-50921c78d3bc' }
 const icon_explore = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_explore.png?alt=media&token=a02e0348-264c-4930-abe9-82a6f0e4485e' }
+const icon_messaging = { uri: "https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_messaging.png?alt=media&token=71dbe876-b0d6-4052-b1ab-6bc56db2b0d6" }
 
 export {
   login_bg,
@@ -22,5 +23,6 @@ export {
   sign_up_bg,
   icon_hamburger,
   icon_log_out,
-  icon_discover
+  icon_discover,
+  icon_messaging
 }

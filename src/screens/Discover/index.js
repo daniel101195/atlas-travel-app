@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import { Animated, FlatList, StyleSheet, View, TouchableOpacity } from "react-native";
 import colors from '../../utils/colors';
-import { icon_hamburger } from '../../utils/images';
-import { CustomText, Icon, BaseScreen, Image, BottomSheet, RadioButton } from '../../components';
+import { CustomText, BaseScreen, BottomSheet, RadioButton, Header } from '../../components';
 import { Radius, Spacing } from '../../metrics';
 import useDiscoverHooks from './hooks';
 import { LocalizeString } from '../../localize';
@@ -13,24 +12,6 @@ const Discover = (props) => {
   const { isLoading, scrollIndicatorPosition, scrollIndicatorSize, scrollIndicator,
     isShowBottomSheet, isSelected, onChangeBottomSheet, onChangeSelected,
     onToggleDrawer, onSetScrollBarWidth, onSetCompleteBarWidth } = useDiscoverHooks(props, LocalizeString);
-
-  const renderHeader = useCallback(() => {
-    return (
-      <View style={styles.header}>
-        <View style={styles.containerHeader}>
-          <View style={{ flexBasis: 100 }}>
-            <Image source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
-          </View>
-          <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleDiscover}</CustomText>
-          <View style={styles.containerIcons}>
-            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.noti_icon} style={{ marginEnd: Spacing.M }} />
-            <Icon type='ionicon' name='ios-search' size={24} color={colors.noti_icon} />
-          </View>
-        </View>
-        <View style={styles.line} />
-      </View>
-    )
-  }, [])
 
   const renderList = () => {
     return (
@@ -86,7 +67,7 @@ const Discover = (props) => {
   return (
     <BaseScreen
       isLoading={isLoading}
-      header={renderHeader()}
+      header={<Header title={LocalizeString.titleDiscover} onToggleDrawer={onToggleDrawer} />}
       bottomSheet={renderBottomSheet}>
       <View style={styles.containerContent}>
         {renderContent()}

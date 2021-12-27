@@ -1,36 +1,17 @@
 import React, { useCallback } from 'react';
 import { Animated, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import colors from '~/utils/colors';
-import { icon_hamburger } from '~/utils/images';
-import { CustomText, Icon, BaseScreen, Image } from '~/components';
+import { CustomText, BaseScreen, Header } from '~/components';
 import { Spacing } from '~/metrics';
-import useDiscoverHooks from './hooks';
+import useExploreHooks from './hooks';
 import { LocalizeString } from '~/localize';
 import { memoDeepEqual } from '~/utils/helpers';
 import { scaleSize } from '~/utils/spacing';
 import PagerView from 'react-native-pager-view';
 
 const Explore = (props) => {
-  const { isLoading, isShowBottomSheet, isSelected, startValue, currentTab, pagerRef,
-    onChangeBottomSheet, onChangeSelected, onToggleDrawer, onChangeTab } = useDiscoverHooks(props, LocalizeString);
-
-  const renderHeader = useCallback(() => {
-    return (
-      <View style={styles.header}>
-        <View style={styles.containerHeader}>
-          <View style={{ flexBasis: 100 }}>
-            <Image tintColor={colors.mediumBlack} source={icon_hamburger} style={styles.icHambuger} onPress={onToggleDrawer} />
-          </View>
-          <CustomText h5 customStyle={styles.txtFooter} semiBold>{LocalizeString.titleExplore}</CustomText>
-          <View style={styles.containerIcons}>
-            <Icon type='ionicon' name='notifications-outline' size={24} color={colors.mediumBlack} style={{ marginEnd: Spacing.M }} />
-            <Icon type='ionicon' name='ios-search' size={24} color={colors.mediumBlack} />
-          </View>
-        </View>
-        {renderTabs()}
-      </View>
-    )
-  }, [currentTab])
+  const { isLoading, startValue, currentTab, pagerRef,
+    onToggleDrawer, onChangeTab, onPageSelected } = useExploreHooks(props, LocalizeString);
 
   const renderTabs = useCallback(() => {
     return (
@@ -61,6 +42,7 @@ const Explore = (props) => {
       <PagerView
         ref={pagerRef}
         style={styles.pagerView}
+        onPageSelected={onPageSelected}
         initialPage={0}>
         <View key="0" style={{ flex: 1 }}>
           <FlatList
@@ -79,9 +61,9 @@ const Explore = (props) => {
         </View>
       </PagerView>
     )
-  }, [pagerRef])
+  }, [pagerRef, currentTab])
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     if (item === 1 || item === 4) {
       return <View style={{ flex: 0.5, height: 100, backgroundColor: 'green', marginEnd: item === 1 ? Spacing.XS : scaleSize(0) }}>
 
@@ -98,7 +80,11 @@ const Explore = (props) => {
     <BaseScreen
       isLoading={isLoading}
       isGradient={false}
-      header={renderHeader()}>
+      header={<Header 
+        childTab={renderTabs()} 
+        title={LocalizeString.titleExplore} 
+        isDarkStyle={true} 
+        onToggleDrawer={onToggleDrawer} />}>
       <Animated.View style={styles.containerContent}>
         {renderContent()}
       </Animated.View>

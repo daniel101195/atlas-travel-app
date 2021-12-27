@@ -1,8 +1,9 @@
-import React, { useCallback, memo } from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { LoadingView, ImageBackground, FloatingButton } from '~/components';
 import colors from '~/utils/colors';
+import { memoDeepEqual } from '~/utils/helpers';
 
 const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {}, onPressFloating = () => { },
   urlImageBg, isGradient = true, isShowFloating = false, containerChldrenStyle = {}, bottomSheet }) => {
@@ -86,4 +87,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default memo(BaseScreen)
+export default memoDeepEqual(BaseScreen)
