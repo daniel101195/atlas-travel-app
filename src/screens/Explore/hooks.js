@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 import { Spacing } from "~/metrics";
-import { getSccreenWidth } from "~/utils/helpers";
+import { DEVICE_WIDTH } from '~/utils/dimensions';
 import { scaleSize } from "~/utils/spacing";
 
 const useExploreHooks = (props) => {
@@ -44,7 +44,7 @@ const useExploreHooks = (props) => {
 
   const onAnimationTab = () => {
     Animated.timing(startValue, {
-      toValue: currentTab === 0 ? scaleSize(0) : (getSccreenWidth() / 2) - Spacing.L,
+      toValue: currentTab === 0 ? scaleSize(0) : (DEVICE_WIDTH / 2) - Spacing.L,
       duration: 350,
       useNativeDriver: true,
     }).start();

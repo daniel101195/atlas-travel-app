@@ -18,7 +18,10 @@ export interface ScreenProps {
 }
 
 export interface NavigationProps {
-  toggleDrawer: Function
+  toggleDrawer: Function,
+  setOptions: Function,
+  canGoBack: Function,
+  goBack: Function
 }
 
 export interface FloatingButtonProps {
@@ -28,7 +31,8 @@ export interface FloatingButtonProps {
 
 export interface ItemMessageProps {
   email: String
-  item: MessageProps
+  item: MessageProps,
+  onNavigateConversation: () => void
 }
 
 export interface MessageProps {
@@ -40,4 +44,7 @@ export interface MessageProps {
 }
 export interface TimeInterface {
   seconds: number
+}
+export interface ConversationProps {
+
 }

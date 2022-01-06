@@ -12,14 +12,18 @@ import { scaleSize } from "~/utils/spacing";
 import ItemMessage from './Item';
 
 const Messaging: React.FC<MessagingProps> = (props: ScreenProps): ReactElement => {
-  const { currenttUser, messages, onToggleDrawer } = useMessagingHooks(props);
+  const { currenttUser, messages, onToggleDrawer, onNavigateConversation } = useMessagingHooks(props);
 
   const renderListMessaging = useCallback((): ReactElement => {
     return (
       <FlatList
         data={messages}
         contentContainerStyle={styles.contentContainer}
-        renderItem={({ item }) => <ItemMessage item={item} email={currenttUser?.email}/>}
+        renderItem={({ item }) =>
+          <ItemMessage
+            onNavigateConversation={onNavigateConversation}
+            item={item}
+            email={currenttUser?.email} />}
         keyExtractor={(item, index) => index.toString()}
       />
     )

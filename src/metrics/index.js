@@ -1,4 +1,4 @@
-import { scaleSize, scaleFont } from '~/utils/spacing';
+import { scaleSize } from '~/utils/spacing';
 
 const Spacing = {
   XXS: scaleSize(2),

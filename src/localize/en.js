@@ -46,6 +46,9 @@ export default {
   //Message
   titleMessage: 'Messaging',
 
+  //Conversation
+  titleConversation: 'Conversation',
+
   //Sign Out
   titleSignOut: 'Sign out',
   titleEdit: 'Edit',

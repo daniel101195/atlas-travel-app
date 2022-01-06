@@ -1,15 +1,11 @@
 import { isEqual } from 'lodash';
-import { memo } from 'react';
-import { Dimensions } from 'react-native';
-import { showMessage, hideMessage } from "react-native-flash-message";
-
-const getSccreenWidth = () => {
-  return Dimensions.get('window').width;
-}
-
-const getSccreenHeight = () => {
-  return Dimensions.get('window').height;
-}
+import React, { memo } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { showMessage } from "react-native-flash-message";
+import Icon from '~/components/Icon';
+import { scaleSize } from './spacing';
+import colors from './colors';
+import { CustomText, Image } from '~/components';
 
 const renderSuccessMessage = (message = '', type = 'success') => {
   showMessage({
@@ -30,12 +26,39 @@ const memoDeepEqual = component => {
 };
 
 const lowercaseLetter = (string = '') => {
-  return string.charAt(0).toLowerCase() + string.slice(1); 
+  return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
-export { getSccreenWidth, 
-  getSccreenHeight, 
-  renderErrorMessage, 
-  renderSuccessMessage, 
+const renderHeaderLeft = ({ imageUrl = '', roomName = '', onPressBack = () => null}) => {
+  return (
+    <View style={styles.containerHeaderLeft}>
+      <Icon type='material' name='chevron-left' size={scaleSize(24)}
+        color={colors.grayMedium} onPress={onPressBack} />
+      <Image source={{ uri: imageUrl }} style={styles.avatar} />
+      <CustomText h5 bold customStyle={{ color: colors.mediumBlack }}>{roomName}</CustomText>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  containerHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginStart: scaleSize(16),
+    marginBottom: scaleSize(4)
+  },
+  avatar: {
+    width: scaleSize(32),
+    height: scaleSize(32),
+    marginStart: scaleSize(4),
+    marginEnd: scaleSize(16)
+  }
+})
+
+export {
+  renderErrorMessage,
+  renderSuccessMessage,
   lowercaseLetter,
-  memoDeepEqual }
+  memoDeepEqual,
+  renderHeaderLeft
+}

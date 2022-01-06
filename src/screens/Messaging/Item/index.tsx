@@ -7,12 +7,12 @@ import { scaleSize } from "~/utils/spacing";
 import colors from "~/utils/colors";
 import { timeSince } from '~/utils/time';
 
-const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {} }) => {
+const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {}, onNavigateConversation }) => {
   const timeago = timeSince(new Date(item?.updatedAt?.seconds * 1000))
   const isSeen = item?.lastSeenBy === email;
 
   return (
-    <TouchableOpacity style={styles.containerItem}>
+    <TouchableOpacity style={styles.containerItem} onPress={onNavigateConversation}>
       <View style={styles.containerLeft}>
         <Image isLocal={false} source={item?.imageUrl} style={styles.roomImage} />
         {!isSeen && <View style={styles.containerIndicator}>
@@ -22,7 +22,7 @@ const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {} }) => {
       <View style={{ flex: 1 }}>
         <View style={styles.containerHeader}>
           <CustomText semiBold h4 customStyle={{ ...styles.roomTitle, flex: 1, marginEnd: Spacing.XS }}>{item?.roomName}</CustomText>
-          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.3 }}>{timeago}</CustomText>
+          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.35, textAlign: 'center' }}>{timeago}</CustomText>
         </View>
         <CustomText customStyle={styles.lastMessage}>{item?.lastMessage}</CustomText>
       </View>

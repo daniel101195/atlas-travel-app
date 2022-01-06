@@ -21,6 +21,7 @@ import { LocalizeString } from '../localize';
 import { GlobalContext } from '../context';
 import LinearGradient from 'react-native-linear-gradient';
 import Messaging from '~/screens/Messaging';
+import Conversation from '~/screens/Conversation';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -58,6 +59,12 @@ const MainStackNavigation = () => {
           options={{
             headerShown: false
           }} />
+        <Stack.Screen
+          name={stacks.conversation.name}
+          component={ConversationStack}
+          options={{
+            headerShown: false
+          }} />
       </Stack.Navigator>
       <FlashMessage position='top' />
     </View>
@@ -85,6 +92,18 @@ const AuthenticationStackNavigation = () => {
         name={screens.email.name}
         component={Email}
         options={(navigation) => screenOptions(navigation, { headerShown: false })} />
+    </Stack.Navigator>
+  )
+}
+
+const ConversationStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={screens.conversation.name}
+        component={Conversation}
+        options={(navigation) => screenOptions(navigation)} 
+        />
     </Stack.Navigator>
   )
 }

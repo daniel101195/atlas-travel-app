@@ -3,6 +3,8 @@ import { GlobalContext } from '~/context';
 import { ScreenProps } from '~/index';
 import firestore from '@react-native-firebase/firestore';
 import { FIRESTORE_COLLECTIONS } from '~/api';
+import { redirect_comp } from '~/navigation/helper';
+import { screens, stacks } from '~/navigation/screens';
 
 const useMessagingHooks = (props: ScreenProps) => {
   const { state } = useContext(GlobalContext);
@@ -25,6 +27,10 @@ const useMessagingHooks = (props: ScreenProps) => {
       });
   }
 
+  const onNavigateConversation = (): void => {
+    redirect_comp(stacks.conversation.name, props?.navigation, screens.conversation.name);
+  }
+
   //----------------------- Side Effects -----------------------
 
   useEffect(() => {
@@ -35,6 +41,7 @@ const useMessagingHooks = (props: ScreenProps) => {
     currenttUser,
     messages,
     onToggleDrawer,
+    onNavigateConversation
   }
 }
 

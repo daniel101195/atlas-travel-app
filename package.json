@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "all": "watchman watch-del-all && rm -rf yarn.lock && rm -rf node_modules/ && yarn",
+    "all": "rm -rf yarn.lock && rm -rf node_modules/ && yarn install",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "npx react-native start --reset-cache",

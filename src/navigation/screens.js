@@ -27,6 +27,9 @@ const screens = {
   },
   signOut: {
     name: LocalizeString.titleSignOut
+  },
+  conversation: {
+    name: LocalizeString.titleConversation
   }
 }
 
@@ -36,6 +39,9 @@ const stacks = {
   },
   home: { 
     name: 'Home'
+  },
+  conversation: {
+    name: 'Conversation'
   }
 }
 
