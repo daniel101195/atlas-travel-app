@@ -12,7 +12,7 @@ const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {}, onNavi
   const isSeen = item?.lastSeenBy === email;
 
   return (
-    <TouchableOpacity style={styles.containerItem} onPress={onNavigateConversation}>
+    <TouchableOpacity style={styles.containerItem} onPress={() => onNavigateConversation(item)}>
       <View style={styles.containerLeft}>
         <Image isLocal={false} source={item?.imageUrl} style={styles.roomImage} />
         {!isSeen && <View style={styles.containerIndicator}>
@@ -21,8 +21,8 @@ const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {}, onNavi
       </View>
       <View style={{ flex: 1 }}>
         <View style={styles.containerHeader}>
-          <CustomText semiBold h4 customStyle={{ ...styles.roomTitle, flex: 1, marginEnd: Spacing.XS }}>{item?.roomName}</CustomText>
-          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.35, textAlign: 'center' }}>{timeago}</CustomText>
+          <CustomText numLine={1} semiBold h4 customStyle={{ ...styles.roomTitle, flex: 1, marginEnd: Spacing.XS }}>{item?.roomName}</CustomText>
+          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.35, textAlign: 'center' }} numLine={1}>{timeago}</CustomText>
         </View>
         <CustomText customStyle={styles.lastMessage}>{item?.lastMessage}</CustomText>
       </View>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   containerLeft: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginEnd: Spacing.L
+    marginEnd: Spacing.M
   },
   containerHeader: {
     justifyContent: "space-between",

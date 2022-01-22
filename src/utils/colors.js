@@ -14,5 +14,6 @@ export default {
   close_icon: '#AAA',
   noti_icon: 'rgba(255, 255, 255, 0.5)',
   bgHeader: '#EBEBEB',
-  mediumBlack: '#333'
+  mediumBlack: '#333',
+  bgMessageInput: '#FAFAFA'
 }

@@ -3,9 +3,10 @@ import { memoDeepEqual } from "~/utils/helpers";
 import { ConversationProps, ScreenProps } from '~/index';
 import { FlatList, StyleSheet, View } from "react-native";
 import { useConversationHooks } from './hooks';
+import { MessageInput } from '~/components';
 
 const Conversation: React.FC<ConversationProps> = (props: ScreenProps): ReactElement => {
-  const { convers } = useConversationHooks(props);
+  const { convers, onSendMessage } = useConversationHooks(props);
 
   return (
     <View style={styles.container}>
@@ -29,14 +30,14 @@ const Conversation: React.FC<ConversationProps> = (props: ScreenProps): ReactEle
           }
         }}
       />
+      <MessageInput onSend={onSendMessage} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#456456'
+    flex: 1
   }
 })
 

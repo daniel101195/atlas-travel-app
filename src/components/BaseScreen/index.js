@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { LoadingView, ImageBackground, FloatingButton } from '~/components';
+import { LoadingView, ImageBackground } from '~/components';
 import colors from '~/utils/colors';
 import { memoDeepEqual } from '~/utils/helpers';
 
-const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {}, onPressFloating = () => { },
-  urlImageBg, isGradient = true, isShowFloating = false, containerChldrenStyle = {}, bottomSheet }) => {
+const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
+  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, renderPopup }) => {
 
   const renderFooter = useCallback(() => {
-    if (!footer) return;
+    if (!footer) return null;
     return (
       <View style={styles.containerFooter}>
         {footer()}
@@ -17,12 +17,12 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
     )
   }, [footer])
 
-  const renderFloatingButton = useCallback(() => {
-    if (!isShowFloating) return null
+  const renderHeader = useCallback(() => {
+    if (!header) return null;
     return (
-      <FloatingButton onPress={onPressFloating} />
+      header
     )
-  }, [isShowFloating])
+  }, [header])
 
   const renderBackground = useCallback(() => {
     if (!urlImageBg) return null
@@ -38,21 +38,34 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
     )
   }, [isGradient])
 
+  const renderLoadingView = useCallback(() => {
+    if (!isLoading) return null;
+    return (
+      <LoadingView isVisible={isLoading} />
+    )
+  }, [isLoading])
+
+  const renderContent = useCallback(() => {
+    return (
+      <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
+        {renderHeader()}
+        <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
+          {children}
+        </View>
+        {renderFooter()}
+      </SafeAreaView>
+    )
+  }, [header, children, footer])
+
   return (
     <View style={styles.container}>
       {renderBackground()}
       {renderGradient()}
       <View style={{ zIndex: 3, flex: 1, ...StyleSheet.absoluteFill }}>
-        <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
-          {header}
-          <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
-            {children}
-          </View>
-          {renderFooter()}
-          {renderFloatingButton()}
-        </SafeAreaView>
-        <LoadingView isVisible={isLoading} />
+        {renderContent()}
+        {renderLoadingView?.()}
         {bottomSheet?.()}
+        {renderPopup?.()}
       </View>
     </View>
   )

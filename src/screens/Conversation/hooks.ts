@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ScreenProps } from '~/index';
-import colors from '~/utils/colors';
 import { renderHeaderLeft } from '~/utils/helpers';
 
 const data = [
@@ -21,6 +20,7 @@ const data = [
 ]
 
 const useConversationHooks = (props: ScreenProps) => {
+  console.log('===>props: ', props?.route?.params?.roomId);
   const [convers, setConvers] = useState(data);
 
   const setHeader = () => {
@@ -32,11 +32,12 @@ const useConversationHooks = (props: ScreenProps) => {
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/avatars%2Favatar_2.png?alt=media&token=c3d665d1-5f44-46b1-aac3-49eb95dc5037',
         onPressBack: () => props?.navigation?.canGoBack?.() && props?.navigation?.goBack?.(),
         roomName: 'Elya Griffin'
-      }),
-      headerStyle: {
-        backgroundColor: colors.grayVeryLight,
-      }
+      })
     });
+  }
+
+  const onSendMessage = (message: String): void => {
+
   }
 
   //---------------------- side effects ----------------------
@@ -46,7 +47,8 @@ const useConversationHooks = (props: ScreenProps) => {
   }, [])
 
   return {
-    convers
+    convers,
+    onSendMessage
   }
 }
 

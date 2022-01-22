@@ -1,3 +1,4 @@
+import { JSXElementConstructor, ReactChildren } from "react";
 import { StyleProp, ViewProps } from "react-native";
 
 export interface MessagingProps {
@@ -14,9 +15,15 @@ export interface HeaderProps {
 }
 
 export interface ScreenProps {
-  navigation: NavigationProps
+  navigation: NavigationProps,
+  route: RouteProps
 }
-
+export interface RouteProps {
+  params: ParamsRouteProps
+}
+export interface ParamsRouteProps {
+  roomId: String
+}
 export interface NavigationProps {
   toggleDrawer: Function,
   setOptions: Function,
@@ -26,13 +33,13 @@ export interface NavigationProps {
 
 export interface FloatingButtonProps {
   customStyle?: Object,
-  onPress: () => null
+  onPress: () => void
 }
 
 export interface ItemMessageProps {
   email: String
   item: MessageProps,
-  onNavigateConversation: () => void
+  onNavigateConversation: (item) => void
 }
 
 export interface MessageProps {
@@ -40,11 +47,22 @@ export interface MessageProps {
   roomName: String,
   lastMessage: String,
   lastSeenBy: String,
-  updatedAt: TimeInterface
+  lastSender: String,
+  participants: Array<String>,
+  updatedAt: TimeInterface,
+  createdAt: TimeInterface,
+  id?: String
 }
 export interface TimeInterface {
   seconds: number
 }
 export interface ConversationProps {
 
+}
+export interface MessageInputProps {
+  onSend: (message: String) => void
+}
+export interface AlertPopupProps {
+  onPress: () => void,
+  children: JSXElementConstructor
 }

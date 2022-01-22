@@ -12,6 +12,8 @@ import RadioButton from './RadioButton';
 import ImageBackground from './ImageBackground';
 import Header from './Header';
 import FloatingButton from './FloatingButton';
+import MessageInput from './MessageInput';
+import Popup from './Popup';
 
 export { 
   Input, 
@@ -27,5 +29,7 @@ export {
   RadioButton,
   ImageBackground,
   Header,
-  FloatingButton
+  FloatingButton,
+  MessageInput,
+  Popup
 }

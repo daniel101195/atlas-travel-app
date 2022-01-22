@@ -15,7 +15,7 @@ const globalReducer = (state = initialState, action) => {
         userInfo: action.userInfo
       }
     }
-    case actionType.UPDATE_USER_INFO: {
+    case actionType.UPDATE_MESSAGES: {
       return {
         ...state,
         messages: action.messages

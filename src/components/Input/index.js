@@ -10,8 +10,8 @@ import { memoDeepEqual } from '../../utils/helpers';
 import { FontSize, Spacing } from '../../metrics';
 import { Icon, CustomText } from '../index';
 
-const FloatingLabelInput = ({ value = '', label = '', containerStyle = {}, keyId,
-  onChangeText = () => { }, isSecure = false, iconName = '', iconType = '', errorMessage = '',
+const FloatingLabelInput = ({ value = '', label = '', containerStyle = {}, keyId, textStyle = {},
+  onChangeText = () => { }, isSecure = false, iconName = '', iconType = '', errorMessage = '', inputRef,
   iconColor = colors.grayMedium, onPressIcon = () => { }, onReleaseIcon = () => { }, ...props }) => {
 
   const isEmpty = value === '';
@@ -50,7 +50,8 @@ const FloatingLabelInput = ({ value = '', label = '', containerStyle = {}, keyId
       </Animated.Text>
       <View style={defaultStyles.containerInput}>
         <TextInput
-          style={defaultStyles.textInput(isFocused, iconName !== '')}
+          ref={inputRef}
+          style={{ ...defaultStyles.textInput(isFocused, iconName !== ''), ...textStyle }}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChangeText={onChangeText}

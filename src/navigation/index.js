@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useNavigation, useRoute, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { CustomText, Image, Button } from '../components';
 import { screens, stacks, sideMenu, sideMenuFooter } from './screens';
@@ -22,6 +22,8 @@ import { GlobalContext } from '../context';
 import LinearGradient from 'react-native-linear-gradient';
 import Messaging from '~/screens/Messaging';
 import Conversation from '~/screens/Conversation';
+import { onUploadAvatar, onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged } from '~/api';
+import { onGetImageFromLibrary } from '~/utils/media';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -102,26 +104,39 @@ const ConversationStack = () => {
       <Stack.Screen
         name={screens.conversation.name}
         component={Conversation}
-        options={(navigation) => screenOptions(navigation)} 
-        />
+        options={(navigation) => screenOptions(navigation)}
+      />
     </Stack.Navigator>
   )
 }
 
+const onChangeAvatar = async (email, displayName) => {
+  const image = await onGetImageFromLibrary({ fileQuality: 0.7 });
+  const imageName = await onUploadAvatar({ image, userName: displayName });
+  const url = await onGetAvatarUrl({ imageName });
+  onUpdateUserInfo({ userInfo: { avatar: url }, email });
+}
+
 const MainDrawerNavigation = () => {
-  const { state } = useContext(GlobalContext);
+  const { state, dispatch } = useContext(GlobalContext);
   const navigation = useNavigation();
   const route = useRoute();
 
+  useEffect(() => {
+    onListentUserInfoChanged(state?.userInfo?.email, dispatch);
+  }, [])
+
   const renderHeader = useCallback(() => {
-    const { photoURL, email, displayName } = state?.userInfo || {};
+    const { avatar, email = '', displayName = '' } = state?.userInfo || {};
     return (
       <View style={styles.containerHeader}>
-        <Image source={{ uri: photoURL }} style={styles.avatar} />
+        <Image
+          source={{ uri: avatar || 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png' }}
+          style={styles.avatar} resizeMode='cover' />
         <View style={styles.containerText}>
           <CustomText bold h3 customStyle={{ color: colors.black }}>{displayName}</CustomText>
           <CustomText>{email}</CustomText>
-          <Button onPress={() => { }} buttonStyle={styles.btnEdit} title={LocalizeString.titleEdit} />
+          <Button onPress={() => onChangeAvatar(email, displayName)} buttonStyle={styles.btnEdit} title={LocalizeString.titleEditAvatar} />
         </View>
       </View>
     )
@@ -232,9 +247,9 @@ const styles = StyleSheet.create({
     borderRadius: Radius.S
   }),
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: scaleSize(64),
+    height: scaleSize(64),
+    borderRadius: scaleSize(32),
     marginBottom: Spacing.S
   },
   headerTitle: {

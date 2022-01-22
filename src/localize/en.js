@@ -48,10 +48,22 @@ export default {
 
   //Conversation
   titleConversation: 'Conversation',
+  titleTypeSomething: 'Type something ...',
+  titleCreateRoom: 'Create Room',
+  titleCreate: 'Create',
+  titleCreateRoomSuccess: 'Create Room successfully!',
+  titleCreateRoomFailed: 'Create Room failed!',
 
   //Sign Out
   titleSignOut: 'Sign out',
   titleEdit: 'Edit',
+  titleEditAvatar: 'Edit Avatar',
+
+  // Drawer Menu
+  titleUploadAvatarSuccess: 'Upload avatar success!',
+  titleUploadAvatarFailed: 'Upload avatar failed!',
+  titleUpdatedInfoSuccess: 'Updated Info success!',
+  titleUpdatedInfoFailed: 'Updated Info failed!',
 
   // Error
   errorPasswordNotValid: 'Password is not valid',

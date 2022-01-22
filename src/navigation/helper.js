@@ -37,6 +37,6 @@ export const redirect = (navigation, screenName = '', type = REDIRECT_TYPE.navig
   );
 }
 
-export const redirect_comp = (comp, navigation, screenName = '') => {
-  navigation.navigate(comp, { screen: screenName });
+export const redirect_comp = (comp, navigation, screenName = '', params = {}) => {
+  navigation.navigate(comp, { screen: screenName, params });
 }

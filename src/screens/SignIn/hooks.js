@@ -46,7 +46,10 @@ const useLoginHooks = (props) => {
           email: loginData?.username,
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
-        onSubmitCompleted(await onSignIn({ username: loginData?.username, password: loginData?.password }), userInfo);
+        onSubmitCompleted(await onSignIn({
+          username: loginData?.username,
+          password: loginData?.password
+        }), userInfo);
       }
     } catch (error) {
       console.log('===>signInError: ', error);
@@ -56,9 +59,9 @@ const useLoginHooks = (props) => {
 
   const onSubmitCompleted = async (result, userInfo = {}) => {
     if (result) {
-      isRemember ? saveUserInfo(userInfo) : onClearOldData();
-      onDispatchUserInfo(onGetUserInfoFirestore());
-      redirect_comp(stacks.home.name, props?.navigation, screens.discover.name);
+      isRemember ? saveUserInfo(userInfo) : onClearOldData(); // Save data user to local storage
+      onDispatchUserInfo(await onGetUserInfoFirestore({ email: userInfo?.email })); // Dispatch data to Context Store.
+      redirect_comp(stacks.home.name, props?.navigation, screens.discover.name); // Navigate to Dashboard.
     }
   }
 

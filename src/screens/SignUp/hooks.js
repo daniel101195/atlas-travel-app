@@ -4,7 +4,8 @@ import { screens } from "../../navigation/screens";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LocalizeString } from '../../localize';
 import * as yup from "yup";
-import { onSignUp, onUpdateUserProfile } from '../../api';
+import { onSignUp, onUpdateUserProfile, onSetUserInfo } from '~/api';
+import firestore from "@react-native-firebase/firestore";
 
 const schema = yup.object().shape({
   Username: yup.string().required(LocalizeString.errorRequireField).min(6).max(15),
@@ -33,24 +34,34 @@ const useSignUpHooks = (props, useForm) => {
     redirect(props?.navigation, screens.signIn.name, REDIRECT_TYPE.replace, userInfo);
   }, [props])
 
-  const onNavigateEmail = useCallback(() => {
-    redirect(props?.navigation, screens.email.name, REDIRECT_TYPE.navigate)
-  }, [props])
+  const onUpdateUserInfo = (data = {}) => {
+    const timestamp = firestore.FieldValue.serverTimestamp();
+    const userInfo = {
+      email: data?.Email,
+      userName: data?.Username,
+      displayName: data?.Username,
+      isAgreeTerms: data?.Terms,
+      avatar: '',
+      createdAt: timestamp,
+      updatedAt: timestamp
+    }
+    onSetUserInfo({ userInfo });
+  }
 
   const onSubmit = useCallback(async (data) => {
     try {
-      if (data) {
-        setLoading(true);
-        const result = await onSignUp({ username: data.Email, password: data.Password });
-        if (result) {
-          const resp = await onUpdateProfile(data);
-          resp && onNavigateSignIn({
-            email: data.Email,
-            password: data.Password
-          });
-        }
-        setLoading(false);
+      if (!data) return;
+      setLoading(true);
+      const result = await onSignUp({ username: data.Email, password: data.Password });
+      if (result) {
+        onUpdateUserInfo(data);
+        const resp = await onUpdateProfile(data);
+        resp && onNavigateSignIn({
+          email: data.Email,
+          password: data.Password
+        });
       }
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
