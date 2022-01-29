@@ -8,7 +8,7 @@ import { updateUserInfo } from '../../context/actions';
 import { GlobalContext } from '../../context';
 import { onSignIn, onGetUserInfo as onGetUserInfoFirestore } from '../../api';
 import isEmpty from 'lodash/isEmpty';
-import { lowercaseLetter } from '../../utils/helpers';
+import { lowercaseLetter } from '../../utils/string';
 
 const useLoginHooks = (props) => {
   const { dispatch } = useContext(GlobalContext);
@@ -46,7 +46,7 @@ const useLoginHooks = (props) => {
           email: loginData?.username,
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
-        onSubmitCompleted(await onSignIn({
+        await onSubmitCompleted(await onSignIn({
           username: loginData?.username,
           password: loginData?.password
         }), userInfo);

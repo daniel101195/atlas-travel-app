@@ -3,9 +3,10 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { renderErrorMessage, renderSuccessMessage } from '../utils/helpers';
 import { LocalizeString } from '../localize';
-import { updateMessages, updateUserInfo } from '~/context/actions';
-import { isEmpty } from 'lodash-es';
+import { updateMessages, updateUserInfo, updateConversations } from '~/context/actions';
+import { isEmpty } from 'lodash';
 import { Platform } from 'react-native';
+import { isIphoneX } from '~/utils/dimensions'
 
 const ERRORS_FIREBASE = {
   'auth/user-not-found': LocalizeString.errorUserNotFound,
@@ -18,7 +19,9 @@ const ERRORS_FIREBASE = {
 
 const FIRESTORE_COLLECTIONS = {
   USERS: 'Users',
-  MESSAGING: 'Messaging'
+  MESSAGING: 'Messaging',
+  CONVERSATION: 'Conversation',
+  MESSAGES: 'Messages'
 }
 
 const STORAGE_PATH = {
@@ -144,13 +147,11 @@ const onListentUserInfoChanged = (email, dispatch) => {
 const onListenRoomChanged = (userEmail, dispatch) => {
   firestore()
     .collection(FIRESTORE_COLLECTIONS.MESSAGING)
-    .where('participants', 'array-contains', userEmail)
+    .where('members', 'array-contains', userEmail)
     .onSnapshot(documentSnapshot => {
-      if (!documentSnapshot?.empty) {
-        const messages = [];
-        documentSnapshot?.forEach?.(doc => messages.push({ ...doc.data(), id: doc.id }));
-        dispatch(updateMessages(messages));
-      }
+      const messages = [];
+      documentSnapshot?.forEach?.(doc => messages.push({ ...doc.data(), id: doc.id }));
+      dispatch(updateMessages(messages));
     });
 }
 
@@ -158,30 +159,25 @@ const onCheckRoomExist = ({ userEmail = '', participants = '' }) => {
   return new Promise((resolve, reject) => {
     firestore()
       .collection(FIRESTORE_COLLECTIONS.MESSAGING)
-      .where('participants', 'array-contains', userEmail)
+      .where('members', 'array-contains', userEmail)
       .onSnapshot(documentSnapshot => {
-        if (!documentSnapshot?.empty) {
-          documentSnapshot?.forEach?.(doc => {
-            const array = doc.data().participants;
-            if (!isEmpty(array) && array?.includes?.(participants)) {
-              resolve(true)
-            }
-          });
-          resolve(false);
-        }
+        let isExist = false;
+        documentSnapshot?.forEach?.(doc => {
+          isExist = doc.data()?.members?.includes?.(participants);
+        });
+        resolve(isExist);
       });
   });
 }
 
-const onCreateNewRoom = ({ data = {}, roomId = null }) => {
+const onCreateNewRoom = (data = {}) => {
   return new Promise((resolve, reject) => {
     firestore()
       .collection(FIRESTORE_COLLECTIONS.MESSAGING)
-      .doc(roomId)
-      .set(data)
-      .then(() => {
+      .add(data)
+      .then((resp) => {
         renderSuccessMessage(LocalizeString.titleCreateRoomSuccess);
-        resolve(true);
+        resolve(resp.id);
       })
       .catch(error => {
         console.log('===>onCreateNewRoom: ', error);
@@ -210,8 +206,88 @@ const onGetAvatarUrl = async ({ imageName = '' }) => {
   return url;
 }
 
+const onCreateConversation = ({ id = '' }) => {
+  if (isEmpty(id)) return false;
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+      .doc(id)
+      .set({})
+      .then(() => {
+        resolve(true);
+      })
+      .catch(error => {
+        console.log('===>onCreateConversation: ', error);
+        error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+      })
+  })
+}
+
+const onGetConversations = ({ roomId = '', dispatch }) => {
+  if (isEmpty(roomId) || !dispatch) return [];
+  const subscriber = firestore()
+    .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+    .doc(roomId)
+    .collection(FIRESTORE_COLLECTIONS.MESSAGES)
+    .orderBy('createdAt')
+    .onSnapshot(snapshot => {
+      const messages = [];
+      snapshot?.docs?.forEach?.(documentSnapshot => {
+        messages.push({ ...documentSnapshot.data() });
+      });
+      dispatch(updateConversations(messages));
+    });
+  return subscriber;
+}
+
+const onSendMessage = ({ message = {}, roomId = '' }) => {
+  return new Promise((resolve, reject) => {
+    if (isEmpty(message) || isEmpty(roomId)) resolve(false);
+    firestore()
+      .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+      .doc(roomId)
+      .collection(FIRESTORE_COLLECTIONS.MESSAGES)
+      .add(message)
+      .then(() => {
+        resolve(true);
+      })
+      .catch((error) => {
+        console.log('===>onSendMessage: ', error);
+      })
+  })
+}
+
+const updateLastMessage = ({ roomId = '', lastMessage = '', lastSender = '' }) => {
+  firestore()
+    .collection(FIRESTORE_COLLECTIONS.MESSAGING)
+    .doc(roomId)
+    .update({
+      lastMessage: lastMessage,
+      lastSender: lastSender,
+      updatedAt: firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => { })
+    .catch((error) => {
+      console.log('===>onSendMessage: ', error);
+    })
+}
+
+const updateLastSeen = ({ roomId = '', lastSeen = [] }) => {
+  firestore()
+    .collection(FIRESTORE_COLLECTIONS.MESSAGING)
+    .doc(roomId)
+    .update({
+      lastSeenBy: lastSeen
+    })
+    .then(() => { })
+    .catch((error) => {
+      console.log('===>updateLastSeen: ', error);
+    })
+}
+
 export {
   FIRESTORE_COLLECTIONS, onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onListenRoomChanged,
   onAuthStateChanged, onSetUserInfo, onGetUserInfo, onCheckRoomExist, onCreateNewRoom, onUploadAvatar,
-  onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged
+  onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged, onGetConversations, onSendMessage,
+  onCreateConversation, updateLastMessage, updateLastSeen
 }

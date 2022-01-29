@@ -6,9 +6,9 @@ import colors from '../../utils/colors';
 import { sign_up_bg } from '../../utils/images';
 import { LocalizeString } from '../../localize';
 import useSignUpHooks from './hooks';
-import { upperFirstChar } from '../../utils/string';
+import { upperFirstChar, lowercaseLetter } from '../../utils/string';
 import { Controller, useForm } from "react-hook-form";
-import { memoDeepEqual, lowercaseLetter } from '../../utils/helpers';
+import { memoDeepEqual } from '../../utils/helpers';
 
 const fontSizeTitle = 28;
 

@@ -14,3 +14,8 @@ export const updateMessages = (messages) => ({
   type: actionType.UPDATE_MESSAGES,
   messages
 })
+
+export const updateConversations = (conversations) => ({
+  type: actionType.UPDATE_CONVERSARTIONS,
+  conversations
+})

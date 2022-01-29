@@ -1,6 +1,7 @@
 import { JSXElementConstructor, ReactChildren } from "react";
 import { StyleProp, ViewProps } from "react-native";
 
+export declare type ConversationType = 'text' | 'image' | 'video';
 export interface MessagingProps {
   
 }
@@ -19,10 +20,7 @@ export interface ScreenProps {
   route: RouteProps
 }
 export interface RouteProps {
-  params: ParamsRouteProps
-}
-export interface ParamsRouteProps {
-  roomId: String
+  params: { roomInfo: MessageProps }
 }
 export interface NavigationProps {
   toggleDrawer: Function,
@@ -37,27 +35,49 @@ export interface FloatingButtonProps {
 }
 
 export interface ItemMessageProps {
-  email: String
+  email: string
   item: MessageProps,
   onNavigateConversation: (item) => void
 }
 
 export interface MessageProps {
-  imageUrl: String,
-  roomName: String,
-  lastMessage: String,
-  lastSeenBy: String,
-  lastSender: String,
-  participants: Array<String>,
+  imageUrl: string,
+  roomName: string,
+  lastMessage: string,
+  lastSeenBy: Array<string>,
+  lastSender: string,
+  participants: Array<MemberProps>,
   updatedAt: TimeInterface,
   createdAt: TimeInterface,
-  id?: String
+  id?: string
+}
+export interface MemberProps {
+  avatar: string,
+  displayName: string,
+  email: string
+}
+export interface ConversationProps {
+  content: string,
+  createtdAt: string,
+  sender: string,
+  type: ConversationType,
+  updatedAt: string
+}
+export interface UserProps {
+  avatar: string,
+  createdAt: string,
+  displayName: string,
+  email: string,
+  isAgreeTerms: boolean,
+  updatedAt: string,
+  userName: string
 }
 export interface TimeInterface {
   seconds: number
 }
-export interface ConversationProps {
-
+export interface BubbleConversationProps {
+  email: string,
+  item: ConversationProps
 }
 export interface MessageInputProps {
   onSend: (message: String) => void
@@ -65,4 +85,7 @@ export interface MessageInputProps {
 export interface AlertPopupProps {
   onPress: () => void,
   children: JSXElementConstructor
+}
+export interface ConversationScreenProps {
+
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CustomText, Image } from '~/components';
-import { Spacing } from "~/metrics";
+import { Radius, Spacing } from "~/metrics";
 import { ItemMessageProps } from '~/index';
 import { scaleSize } from "~/utils/spacing";
 import colors from "~/utils/colors";
@@ -9,20 +9,22 @@ import { timeSince } from '~/utils/time';
 
 const ItemMessage: React.FC<ItemMessageProps> = ({ email = '', item = {}, onNavigateConversation }) => {
   const timeago = timeSince(new Date(item?.updatedAt?.seconds * 1000))
-  const isSeen = item?.lastSeenBy === email;
+  const isSeen = item?.lastSeenBy?.includes?.(email);
+  const participants = item?.participants?.filter(user => user?.email !== email)?.[0];
+  const roomName = item?.roomName || participants?.displayName;
 
   return (
     <TouchableOpacity style={styles.containerItem} onPress={() => onNavigateConversation(item)}>
       <View style={styles.containerLeft}>
-        <Image isLocal={false} source={item?.imageUrl} style={styles.roomImage} />
+        <Image isLocal={false} source={item?.imageUrl || participants?.avatar} style={styles.roomImage} resizeMode={'cover'}/>
         {!isSeen && <View style={styles.containerIndicator}>
           <View style={styles.unreadIndicator} />
         </View>}
       </View>
       <View style={{ flex: 1 }}>
         <View style={styles.containerHeader}>
-          <CustomText numLine={1} semiBold h4 customStyle={{ ...styles.roomTitle, flex: 1, marginEnd: Spacing.XS }}>{item?.roomName}</CustomText>
-          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.35, textAlign: 'center' }} numLine={1}>{timeago}</CustomText>
+          <CustomText numLine={1} semiBold h4 customStyle={{ ...styles.roomTitle, marginEnd: Spacing.XS }}>{roomName}</CustomText>
+          <CustomText customStyle={{ ...styles.roomTitle, flex: 0.4 }} numLine={1}>{timeago}</CustomText>
         </View>
         <CustomText customStyle={styles.lastMessage}>{item?.lastMessage}</CustomText>
       </View>
@@ -59,6 +61,7 @@ const styles = StyleSheet.create({
   roomImage: {
     width: scaleSize(46),
     height: scaleSize(46),
+    borderRadius: Radius.M
   },
   roomTitle: {
     color: colors.mediumBlack,

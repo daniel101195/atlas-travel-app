@@ -1,27 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { ScreenProps } from '~/index';
 import { renderHeaderLeft } from '~/utils/helpers';
-
-const data = [
-  {
-    id: '1',
-    content: 'Message 111111111',
-    sender: 'viet@gmail.com',
-    createdAt: '',
-    updatedAt: ''
-  },
-  {
-    id: '2',
-    content: 'Message 222222222222222222',
-    sender: 'viet@gmail.com',
-    createdAt: '',
-    updatedAt: ''
-  }
-]
+import {
+  onGetConversations, onSendMessage as onSendMessageAPI,
+  updateLastMessage, updateLastSeen
+} from '~/api';
+import { GlobalContext } from '~/context';
+import { updateConversations } from '~/context/actions';
+import firestore from '@react-native-firebase/firestore';
+import { ITEM_TYPES } from '~/utils/constants';
+import { nanoid } from 'nanoid/non-secure';
 
 const useConversationHooks = (props: ScreenProps) => {
-  console.log('===>props: ', props?.route?.params?.roomId);
-  const [convers, setConvers] = useState(data);
+  let unsubscribe = null;
+  const ref = useRef(null);
+  const { state: { conversations, userInfo }, dispatch } = useContext(GlobalContext);
+  const { participants, id: roomId, imageUrl, roomName, lastSeenBy } = props.route.params?.roomInfo;
+  const participant = participants?.filter(user => user?.email !== userInfo?.email)?.[0];
+  const roomImage = imageUrl || participant?.avatar;
 
   const setHeader = () => {
     props?.navigation?.setOptions?.({
@@ -29,26 +25,65 @@ const useConversationHooks = (props: ScreenProps) => {
       headerTitle: null,
       headerTintColor: 'white',
       headerLeft: () => renderHeaderLeft({
-        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/avatars%2Favatar_2.png?alt=media&token=c3d665d1-5f44-46b1-aac3-49eb95dc5037',
-        onPressBack: () => props?.navigation?.canGoBack?.() && props?.navigation?.goBack?.(),
-        roomName: 'Elya Griffin'
+        imageUrl: roomImage,
+        onPressBack: () => { 
+          props?.navigation?.canGoBack?.() && props?.navigation?.goBack?.()
+        },
+        roomName: roomName || participant?.displayName
       })
     });
   }
 
-  const onSendMessage = (message: String): void => {
+  const onSendMessage = (message: string): void => {
+    const timestamp = firestore.FieldValue.serverTimestamp();
+    const messageData = {
+      id: nanoid(),
+      content: message,
+      sender: userInfo?.email,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      type: ITEM_TYPES.TEXT
+    };
+    onSendMessageAPI({ roomId: roomId, message: messageData });
+    dispatch(updateConversations([...conversations, messageData]));
+    updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email });
+    updateLastSeen({ roomId, lastSeen: [userInfo?.email] });
+  }
 
+  const onLoadMessages = (): void => {
+    unsubscribe = onGetConversations({ roomId, dispatch });
+  }
+
+  const onUpdateLastSeen = (): void => {
+    const newLastSeen = [...lastSeenBy, userInfo?.email]
+    updateLastSeen({ roomId, lastSeen: newLastSeen });
+  }
+
+  const onContentSizeChange = (): void => {
+    ref?.current?.scrollToEnd?.()
   }
 
   //---------------------- side effects ----------------------
 
   useEffect(() => {
     setHeader();
+    onLoadMessages();
+    onUpdateLastSeen();
+    return () => {
+      dispatch(updateConversations([]));
+    }
   }, [])
 
+  useEffect(() => {
+    return () => unsubscribe();
+  }, [unsubscribe])
+
   return {
-    convers,
-    onSendMessage
+    ref,
+    conversations,
+    userInfo,
+    onSendMessage,
+    onContentSizeChange
   }
 }
 

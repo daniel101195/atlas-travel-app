@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { MessageInputProps } from '~/index';
 import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import colors from "~/utils/colors";
@@ -8,17 +8,23 @@ import { Radius, Spacing } from "~/metrics";
 import { btn_send_message } from '~/utils/images';
 import { LocalizeString } from '~/localize';
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: String) => {} }) => {
-  const [text, setText] = useState<String>('');
+const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) => {} }) => {
+  const [text, setText] = useState<string>('');
+  const ref = useRef(null);
 
-  const onChangeText = useCallback((value: String): void => {
+  const onChangeText = useCallback((value: string): void => {
     value !== text && setText(value);
   }, [text])
 
+  const onSendMessage = useCallback(() => {
+    onSend(text);
+    ref?.current?.clear?.();
+  }, [text, ref])
+
   return (
     <View style={{ ...styles.container, ...styles.shadow }}>
-      <TextInput style={styles.input} placeholder={LocalizeString.titleTypeSomething} onChangeText={onChangeText}/>
-      <TouchableOpacity onPress={() => onSend(text)}>
+      <TextInput ref={ref} style={styles.input} placeholder={LocalizeString.titleTypeSomething} onChangeText={onChangeText}/>
+      <TouchableOpacity onPress={onSendMessage}>
         <Image source={btn_send_message} style={styles.btnSend}/>
       </TouchableOpacity>
     </View>

@@ -15,5 +15,6 @@ export default {
   noti_icon: 'rgba(255, 255, 255, 0.5)',
   bgHeader: '#EBEBEB',
   mediumBlack: '#333',
-  bgMessageInput: '#FAFAFA'
+  bgMessageInput: '#FAFAFA',
+  bgSenderBubble: '#CCC'
 }

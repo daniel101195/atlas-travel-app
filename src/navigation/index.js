@@ -3,27 +3,26 @@ import { NavigationContainer, useNavigation, useRoute, getFocusedRouteNameFromRo
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import React, { useContext, useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { CustomText, Image, Button } from '../components';
+import { CustomText, Image, Button, Icon } from '~/components';
 import { screens, stacks, sideMenu, sideMenuFooter } from './screens';
-import Dashboard from '../screens/Dashboard';
-import SignIn from '../screens/SignIn';
-import SignUp from '../screens/SignUp';
-import Email from '../screens/Email';
-import Discover from '../screens/Discover';
-import Explore from '../screens/Explore';
-import colors from '../utils/colors';
-import { Radius, Spacing } from '../metrics';
-import { scaleSize } from '../utils/spacing';
+import Dashboard from '~/screens/Dashboard';
+import SignIn from '~/screens/SignIn';
+import SignUp from '~/screens/SignUp';
+import Email from '~/screens/Email';
+import Discover from '~/screens/Discover';
+import Explore from '~/screens/Explore';
+import colors from '~/utils/colors';
+import { Radius, Spacing, scaleSize } from '~/metrics';
 import { STATUS_BAR_HEIGHT } from '../utils/dimensions';
-import { Icon } from '../components';
 import FlashMessage from "react-native-flash-message";
-import { LocalizeString } from '../localize';
-import { GlobalContext } from '../context';
+import { LocalizeString } from '~/localize';
+import { GlobalContext } from '~/context';
 import LinearGradient from 'react-native-linear-gradient';
 import Messaging from '~/screens/Messaging';
 import Conversation from '~/screens/Conversation';
 import { onUploadAvatar, onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged } from '~/api';
 import { onGetImageFromLibrary } from '~/utils/media';
+import { isEmpty } from 'lodash';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -112,6 +111,7 @@ const ConversationStack = () => {
 
 const onChangeAvatar = async (email, displayName) => {
   const image = await onGetImageFromLibrary({ fileQuality: 0.7 });
+  if (isEmpty(image)) return;
   const imageName = await onUploadAvatar({ image, userName: displayName });
   const url = await onGetAvatarUrl({ imageName });
   onUpdateUserInfo({ userInfo: { avatar: url }, email });

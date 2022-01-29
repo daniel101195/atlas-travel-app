@@ -693,7 +693,7 @@ PODS:
     - React-perflogger (= 0.64.1)
   - ReactNativeLocalization (2.1.7):
     - React-Core
-  - RealmJS (10.11.0):
+  - RealmJS (10.12.0):
     - GCDWebServer
     - React
   - RNCMaskedView (0.1.11):
@@ -713,7 +713,7 @@ PODS:
     - Firebase/Firestore (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBStorage (14.2.3):
+  - RNFBStorage (14.3.0):
     - Firebase/Storage (= 8.4.0)
     - React-Core
     - RNFBApp
@@ -1024,13 +1024,13 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: ff951a0c241bfaefc4940a3f1f1a229e7cb32fa6
   ReactCommon: bedc99ed4dae329c4fcf128d0c31b9115e5365ca
   ReactNativeLocalization: 90a1181b7672309701dd7e5364fbf587319d41c6
-  RealmJS: de65cc7c3ea041750d66beaa28b30585222c3d94
+  RealmJS: b6097dab8af3bcf1cd5fa0ac39a4e4c54980c719
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: 0e6f1251babf13064e5c426e627239eb68233119
   RNFBAuth: 2d83f4fe0608c4d5ee4b3904da4ac4a08a02e888
   RNFBFirestore: 2e865a2c4124b6f0e267c9d719ee9a5de54d93d3
-  RNFBStorage: 5376cb6f3e2a714fa6657510b1d25eef312f52df
+  RNFBStorage: 809c6ecd0c8a55ba5aa0a17c9ea553df7ec4973e
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: 7f143675d94978c3555345d5bfa8ed6ae800c5d3
   RNScreens: d6da2b9e29cf523832c2542f47bf1287318b1868

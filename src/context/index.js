@@ -4,7 +4,8 @@ import globalReducer from './reducer';
 export const initialState = {
   lang: 'en',
   userInfo: null,
-  messages: []
+  messages: [],
+  conversations: []
 }
 
 export const GlobalContext = createContext(initialState);

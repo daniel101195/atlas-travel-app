@@ -21,6 +21,25 @@ const globalReducer = (state = initialState, action) => {
         messages: action.messages
       }
     }
+    case actionType.UPDATE_CONVERSARTIONS: {
+      if (!!action.conversations && !!state.conversations &&
+        action.conversations?.length > 0 && state.conversations.length > 0) {
+
+        const lastId = action.conversations[action.conversations.length - 1].id;
+        const id = state.conversations[state.conversations.length - 1].id;
+        return {
+          ...state,
+          conversations: lastId === id && !!id ?
+            state.conversations :
+            action.conversations
+        }
+      } else {
+        return {
+          ...state,
+          conversations: action.conversations
+        }
+      }
+    }
     default: return state
   }
 }
