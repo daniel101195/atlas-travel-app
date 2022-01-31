@@ -58,10 +58,10 @@ export interface MemberProps {
 }
 export interface ConversationProps {
   content: string,
-  createtdAt: string,
+  createdAt: string,
   sender: string,
   type: ConversationType,
-  updatedAt: string
+  updatedAt: any
 }
 export interface UserProps {
   avatar: string,
@@ -88,4 +88,8 @@ export interface AlertPopupProps {
 }
 export interface ConversationScreenProps {
 
+}
+export interface GroupConversationProps {
+  title: string,
+  data: Array<ConversationProps>
 }

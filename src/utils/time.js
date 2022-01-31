@@ -28,3 +28,8 @@ export function timeSince(date) {
   if (!date) return '';
   return dayjs(date).fromNow();
 }
+
+export function formatDate(date, format = 'DD-MM-YYYY') {
+  if (!date) return '';
+  return dayjs(date).format(format)
+}

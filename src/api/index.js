@@ -233,7 +233,7 @@ const onGetConversations = ({ roomId = '', dispatch }) => {
     .onSnapshot(snapshot => {
       const messages = [];
       snapshot?.docs?.forEach?.(documentSnapshot => {
-        messages.push({ ...documentSnapshot.data() });
+        messages.push(documentSnapshot.data());
       });
       dispatch(updateConversations(messages));
     });

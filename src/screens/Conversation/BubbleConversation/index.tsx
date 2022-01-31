@@ -6,9 +6,19 @@ import { Radius, scaleSize, Spacing } from "~/metrics";
 import LinearGradient from 'react-native-linear-gradient';
 import colors from "~/utils/colors";
 import { ITEM_TYPES } from '~/utils/constants';
+import { formatDate } from '~/utils/time';
+import { FONT_14 } from "~/utils/spacing";
 
 const BubbleConversation: React.FC<BubbleConversationProps> = ({ email = '', item }) => {
   const isSender = email === item?.sender;
+
+  const renderTimestamp = useCallback(() => {
+    return (
+      <CustomText customStyle={isSender ? styles.txtUpdatedAt : { ...styles.textReceiver, ...styles.txtUpdatedAt }}>
+        {formatDate(item?.updatedAt?.toDate?.(), 'DD-MM-YY')}
+      </CustomText>
+    )
+  }, [])
 
   const renderContent = useCallback((): ReactElement => {
     if (item?.type === ITEM_TYPES.IMAGE) {
@@ -17,7 +27,7 @@ const BubbleConversation: React.FC<BubbleConversationProps> = ({ email = '', ite
       )
     }
     return (
-      <CustomText customStyle={isSender ? {} : styles.textReceiver}>{item?.content}</CustomText>
+      <CustomText customStyle={isSender ? styles.textSender : styles.textReceiver}>{item?.content}</CustomText>
     )
   }, [item?.type, item?.content])
 
@@ -63,7 +73,16 @@ const styles = StyleSheet.create({
     height: scaleSize(84),
   },
   textReceiver: {
-    color: colors.white
+    color: colors.white,
+    fontSize: FONT_14
+  },
+  textSender: {
+    fontSize: FONT_14,
+    textAlign: 'center'
+  },
+  txtUpdatedAt: {
+    fontSize: scaleSize(9),
+    marginTop: Spacing.S
   }
 })
 

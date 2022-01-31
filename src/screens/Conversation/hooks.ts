@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { ScreenProps } from '~/index';
+import { ScreenProps, GroupConversationProps } from '~/index';
 import { renderHeaderLeft } from '~/utils/helpers';
 import {
   onGetConversations, onSendMessage as onSendMessageAPI,
@@ -10,6 +10,9 @@ import { updateConversations } from '~/context/actions';
 import firestore from '@react-native-firebase/firestore';
 import { ITEM_TYPES } from '~/utils/constants';
 import { nanoid } from 'nanoid/non-secure';
+import { formatDate } from '~/utils/time';
+import colors from "~/utils/colors";
+import { cloneDeep } from "lodash-es";
 
 const useConversationHooks = (props: ScreenProps) => {
   let unsubscribe = null;
@@ -23,12 +26,10 @@ const useConversationHooks = (props: ScreenProps) => {
     props?.navigation?.setOptions?.({
       headerTransparent: false,
       headerTitle: null,
-      headerTintColor: 'white',
+      headerTintColor: colors.white,
       headerLeft: () => renderHeaderLeft({
         imageUrl: roomImage,
-        onPressBack: () => { 
-          props?.navigation?.canGoBack?.() && props?.navigation?.goBack?.()
-        },
+        onPressBack: () => props?.navigation?.canGoBack?.() && props?.navigation?.goBack?.(),
         roomName: roomName || participant?.displayName
       })
     });
@@ -44,7 +45,7 @@ const useConversationHooks = (props: ScreenProps) => {
       updatedAt: timestamp,
       type: ITEM_TYPES.TEXT
     };
-    onSendMessageAPI({ roomId: roomId, message: messageData });
+    onSendMessageAPI({ roomId, message: messageData });
     dispatch(updateConversations([...conversations, messageData]));
     updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email });
     updateLastSeen({ roomId, lastSeen: [userInfo?.email] });
@@ -60,30 +61,48 @@ const useConversationHooks = (props: ScreenProps) => {
   }
 
   const onContentSizeChange = (): void => {
-    ref?.current?.scrollToEnd?.()
+    ref?.current?.getScrollResponder()?.scrollToEnd?.()
+    const lastSender = conversations?.[conversations.length - 1]?.sender;
+    lastSender !== userInfo?.email && onUpdateLastSeen();
   }
+
+  const onGroupConversation = (key: string = 'createdAt'): Array<GroupConversationProps> => {
+    const cloneConversation = cloneDeep(conversations);
+    const arr = [];
+
+    cloneConversation.forEach(element => {
+      element.createdAt = formatDate(element?.createdAt?.toDate?.());
+    });
+
+    const obj = cloneConversation.reduce(function (rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+
+    for (const property in obj) {
+      arr.push({ title: property, data: obj[property] });
+    }
+    return arr;
+  };
 
   //---------------------- side effects ----------------------
 
   useEffect(() => {
-    setHeader();
     onLoadMessages();
-    onUpdateLastSeen();
+    setHeader();
     return () => {
+      unsubscribe();
       dispatch(updateConversations([]));
     }
   }, [])
-
-  useEffect(() => {
-    return () => unsubscribe();
-  }, [unsubscribe])
 
   return {
     ref,
     conversations,
     userInfo,
     onSendMessage,
-    onContentSizeChange
+    onContentSizeChange,
+    onGroupConversation
   }
 }
 
