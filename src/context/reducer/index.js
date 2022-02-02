@@ -21,6 +21,12 @@ const globalReducer = (state = initialState, action) => {
         messages: action.messages
       }
     }
+    case actionType.LOAD_MORE_CONVERSATIONS: {
+      return {
+        ...state,
+        conversations: action.conversations
+      }
+    }
     case actionType.UPDATE_CONVERSARTIONS: {
       if (!!action.conversations && !!state.conversations &&
         action.conversations?.length > 0 && state.conversations.length > 0) {

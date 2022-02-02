@@ -19,3 +19,8 @@ export const updateConversations = (conversations) => ({
   type: actionType.UPDATE_CONVERSARTIONS,
   conversations
 })
+
+export const loadMoreConversation = (conversations) => ({
+  type: actionType.LOAD_MORE_CONVERSATIONS,
+  conversations
+})

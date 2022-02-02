@@ -1,42 +1,84 @@
 import React, { ReactElement, useCallback } from "react";
 import { ConversationScreenProps, ScreenProps } from '~/index';
-import { StyleSheet, View, SectionList } from "react-native";
+import { StyleSheet, View, SectionList, Animated } from "react-native";
 import { useConversationHooks } from './hooks';
 import BubbleConversation from "./BubbleConversation";
 import HeaderSection from "./HeaderSection";
-import { MessageInput } from '~/components';
-import { Spacing } from "~/metrics";
+import { Icon, MessageInput } from '~/components';
+import { scaleSize, Spacing } from "~/metrics";
 
 const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): ReactElement => {
-  const { userInfo: { email }, ref, conversations,
-    onSendMessage, onContentSizeChange, onGroupConversation } = useConversationHooks(props);
+  const { userInfo: { email }, ref, conversations, loadMore, isEndReached, animationFlex,
+    onSendMessage, onContentSizeChange, onGroupConversation, onScrollToBottom,
+    onLoadMore, onScroll, onEndReached, onScrollEndDrag } = useConversationHooks(props);
 
-  const renderItem = useCallback(({ item }) => {
+  const renderItem = useCallback(({ item }): ReactElement => {
     return (
       <BubbleConversation item={item} email={email} />
     )
   }, [])
 
-  const renderSectionHeader = useCallback(({ section: { title } }) => {
+  const renderSectionHeader = useCallback(({ section: { title } }): ReactElement => {
     return (
-      <HeaderSection title={title}/>
+      <HeaderSection title={title} />
     )
   }, [])
-  
+
+  const renderIconScrollDown = useCallback((): ReactElement => {
+    return (
+      <View style={styles.containerScroll}>
+        <Animated.View
+          style={{
+            ...styles.containerScrollBottom,
+            transform: [
+              {
+                translateY: animationFlex.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, scaleSize(40)],
+                  extrapolate: "clamp",
+                })
+              },
+            ],
+            opacity: animationFlex.interpolate({
+              inputRange: [0, 1],
+              outputRange: [1, 0],
+              extrapolate: "clamp",
+            })
+          }}>
+          <Icon name='arrow-circle-down' type='material' size={scaleSize(32)} onPress={onScrollToBottom} />
+        </Animated.View>
+      </View>
+    )
+  }, [isEndReached, ref, animationFlex])
+
+  const renderInput = useCallback((): ReactElement => {
+    return (
+      <MessageInput onSend={onSendMessage} />
+    )
+  }, [conversations])
+
   return (
     <View style={styles.container}>
-      {conversations.length > 0 ? <SectionList
+      {conversations?.length > 0 ? <SectionList
         ref={ref}
-        sections={onGroupConversation()}
         style={styles.containerConversation}
-        onContentSizeChange={onContentSizeChange}
+        onEndReachedThreshold={0}
+        scrollEventThrottle={500}
+        refreshing={loadMore}
         contentContainerStyle={styles.containerContent}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
         keyExtractor={(item, index) => item?.updatedAt + index}
+        onScrollEndDrag={onScrollEndDrag}
+        onScroll={onScroll}
+        sections={onGroupConversation()}
+        onContentSizeChange={onContentSizeChange}
+        onEndReached={onEndReached}
+        onRefresh={onLoadMore}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader} /> : <View style={styles.container} />}
-      <MessageInput onSend={onSendMessage} />
+      {renderIconScrollDown()}
+      {renderInput()}
     </View>
   )
 }
@@ -50,6 +92,17 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     paddingTop: Spacing.S
+  },
+  containerScroll: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "transparent"
+  },
+  containerScrollBottom: {
+    paddingBottom: Spacing.S,
+    position: 'absolute',
+    zIndex: 1,
+    bottom: Spacing.M
   }
 })
 

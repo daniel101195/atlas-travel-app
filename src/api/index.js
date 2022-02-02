@@ -6,27 +6,8 @@ import { LocalizeString } from '../localize';
 import { updateMessages, updateUserInfo, updateConversations } from '~/context/actions';
 import { isEmpty } from 'lodash';
 import { Platform } from 'react-native';
-import { isIphoneX } from '~/utils/dimensions'
-
-const ERRORS_FIREBASE = {
-  'auth/user-not-found': LocalizeString.errorUserNotFound,
-  'auth/wrong-password': LocalizeString.errorPasswordNotFound,
-  'auth/email-already-in-use': LocalizeString.errorEmailAlreadyUsed,
-  'auth/network-request-failed': LocalizeString.errorNetworkFailed,
-  'auth/too-many-requests': LocalizeString.errorTooManyRequested,
-  'unknown': LocalizeString.errorUnknown
-}
-
-const FIRESTORE_COLLECTIONS = {
-  USERS: 'Users',
-  MESSAGING: 'Messaging',
-  CONVERSATION: 'Conversation',
-  MESSAGES: 'Messages'
-}
-
-const STORAGE_PATH = {
-  avatars: '/avatars'
-}
+import { ConversationProps } from '~/index';
+import { ERRORS_FIREBASE, FIRESTORE_COLLECTIONS, STORAGE_PATH, QUERY_CONFIG } from './constants';
 
 const onAuthStateChanged = (callback = () => { }) => {
   return auth().onAuthStateChanged(callback);
@@ -230,6 +211,7 @@ const onGetConversations = ({ roomId = '', dispatch }) => {
     .doc(roomId)
     .collection(FIRESTORE_COLLECTIONS.MESSAGES)
     .orderBy('createdAt')
+    .limitToLast(QUERY_CONFIG.LIMIT)
     .onSnapshot(snapshot => {
       const messages = [];
       snapshot?.docs?.forEach?.(documentSnapshot => {
@@ -238,6 +220,31 @@ const onGetConversations = ({ roomId = '', dispatch }) => {
       dispatch(updateConversations(messages));
     });
   return subscriber;
+}
+
+const onLoadMoreConversation = ({ roomId = '', createdAt }) => {
+  return new Promise((resolve, reject) => {
+    if (isEmpty(roomId) || isEmpty(createdAt)) resolve([]);
+    firestore()
+    .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+    .doc(roomId)
+    .collection(FIRESTORE_COLLECTIONS.MESSAGES)
+    .orderBy('createdAt')
+    .endBefore(createdAt)
+    .limitToLast(QUERY_CONFIG.LIMIT)
+    .get()
+    .then((snapshot) => {
+      const messages = [];
+      snapshot?.docs?.forEach?.(documentSnapshot => {
+        messages.push(documentSnapshot.data());
+      });
+      resolve(messages);
+    })
+    .catch(error => {
+      console.log('===>onLoadMoreConversation: ', error);
+      error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+    })
+  })
 }
 
 const onSendMessage = ({ message = {}, roomId = '' }) => {
@@ -257,16 +264,15 @@ const onSendMessage = ({ message = {}, roomId = '' }) => {
   })
 }
 
-const updateLastMessage = ({ roomId = '', lastMessage = '', lastSender = '' }) => {
+const updateLastMessage = ({ roomId = '', lastMessage = '', lastSender = '', updatedAt }) => {
   firestore()
     .collection(FIRESTORE_COLLECTIONS.MESSAGING)
     .doc(roomId)
     .update({
       lastMessage: lastMessage,
       lastSender: lastSender,
-      updatedAt: firestore.FieldValue.serverTimestamp()
+      updatedAt
     })
-    .then(() => { })
     .catch((error) => {
       console.log('===>onSendMessage: ', error);
     })
@@ -279,7 +285,6 @@ const updateLastSeen = ({ roomId = '', lastSeen = [] }) => {
     .update({
       lastSeenBy: lastSeen
     })
-    .then(() => { })
     .catch((error) => {
       console.log('===>updateLastSeen: ', error);
     })
@@ -289,5 +294,5 @@ export {
   FIRESTORE_COLLECTIONS, onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onListenRoomChanged,
   onAuthStateChanged, onSetUserInfo, onGetUserInfo, onCheckRoomExist, onCreateNewRoom, onUploadAvatar,
   onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged, onGetConversations, onSendMessage,
-  onCreateConversation, updateLastMessage, updateLastSeen
+  onCreateConversation, updateLastMessage, updateLastSeen, onLoadMoreConversation
 }

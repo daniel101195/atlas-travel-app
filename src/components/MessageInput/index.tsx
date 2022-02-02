@@ -7,8 +7,9 @@ import { FONT_16, scaleSize } from "~/utils/spacing";
 import { Radius, Spacing } from "~/metrics";
 import { btn_send_message } from '~/utils/images';
 import { LocalizeString } from '~/localize';
+import { isEmpty } from 'lodash';
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) => {} }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) => { } }) => {
   const [text, setText] = useState<string>('');
   const ref = useRef(null);
 
@@ -17,15 +18,16 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) =>
   }, [text])
 
   const onSendMessage = useCallback(() => {
+    if (isEmpty(text)) return;
     onSend(text);
     ref?.current?.clear?.();
   }, [text, ref])
 
   return (
     <View style={{ ...styles.container, ...styles.shadow }}>
-      <TextInput ref={ref} style={styles.input} placeholder={LocalizeString.titleTypeSomething} onChangeText={onChangeText}/>
+      <TextInput ref={ref} style={styles.input} placeholder={LocalizeString.titleTypeSomething} onChangeText={onChangeText} />
       <TouchableOpacity onPress={onSendMessage}>
-        <Image source={btn_send_message} style={styles.btnSend}/>
+        <Image source={btn_send_message} style={styles.btnSend} />
       </TouchableOpacity>
     </View>
   )

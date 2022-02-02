@@ -1,22 +1,30 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Animated, Easing } from 'react-native';
 import { ScreenProps, GroupConversationProps } from '~/index';
 import { renderHeaderLeft } from '~/utils/helpers';
 import {
   onGetConversations, onSendMessage as onSendMessageAPI,
-  updateLastMessage, updateLastSeen
+  updateLastMessage, updateLastSeen, onLoadMoreConversation
 } from '~/api';
 import { GlobalContext } from '~/context';
-import { updateConversations } from '~/context/actions';
+import { loadMoreConversation, updateConversations } from '~/context/actions';
 import firestore from '@react-native-firebase/firestore';
 import { ITEM_TYPES } from '~/utils/constants';
 import { nanoid } from 'nanoid/non-secure';
 import { formatDate } from '~/utils/time';
 import colors from "~/utils/colors";
 import { cloneDeep } from "lodash-es";
+import { scaleSize } from "~/metrics";
+
+let MAX_HEIGHT = 0;
 
 const useConversationHooks = (props: ScreenProps) => {
   let unsubscribe = null;
   const ref = useRef(null);
+  const animationFlex = useRef(new Animated.Value(0)).current;
+  const [loadMore, setLoadMore] = useState(false);
+  const [isEndReached, setEndReached] = useState(true);
+
   const { state: { conversations, userInfo }, dispatch } = useContext(GlobalContext);
   const { participants, id: roomId, imageUrl, roomName, lastSeenBy } = props.route.params?.roomInfo;
   const participant = participants?.filter(user => user?.email !== userInfo?.email)?.[0];
@@ -47,7 +55,7 @@ const useConversationHooks = (props: ScreenProps) => {
     };
     onSendMessageAPI({ roomId, message: messageData });
     dispatch(updateConversations([...conversations, messageData]));
-    updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email });
+    updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email, updatedAt: timestamp });
     updateLastSeen({ roomId, lastSeen: [userInfo?.email] });
   }
 
@@ -56,12 +64,12 @@ const useConversationHooks = (props: ScreenProps) => {
   }
 
   const onUpdateLastSeen = (): void => {
-    const newLastSeen = [...lastSeenBy, userInfo?.email]
+    const newLastSeen = [...lastSeenBy, userInfo?.email];
     updateLastSeen({ roomId, lastSeen: newLastSeen });
   }
 
   const onContentSizeChange = (): void => {
-    ref?.current?.getScrollResponder()?.scrollToEnd?.()
+    isEndReached && onScrollToBottom();
     const lastSender = conversations?.[conversations.length - 1]?.sender;
     lastSender !== userInfo?.email && onUpdateLastSeen();
   }
@@ -85,6 +93,42 @@ const useConversationHooks = (props: ScreenProps) => {
     return arr;
   };
 
+  const onLoadMore = (): void => {
+    setLoadMore(true);
+    const createdAt = conversations?.[0]?.createdAt;
+    onLoadMoreConversation({ roomId, createdAt }).then((data) => {
+      dispatch(loadMoreConversation([...data, ...conversations]));
+      setLoadMore(false);
+    });
+  }
+
+  const onEndReached = (): void => {
+    !isEndReached && setEndReached(true);
+  }
+
+  const onScroll = (event): void => {
+    const { contentSize: { height }, layoutMeasurement: { height: H } } = event?.nativeEvent || {};
+    MAX_HEIGHT = height - H;
+  }
+
+  const onScrollToBottom = () => {
+    ref?.current?.getScrollResponder()?.scrollToEnd?.();
+  }
+
+  const onScrollEndDrag = (event): void => {
+    const { contentOffset: { y: scrollOffset }} = event?.nativeEvent || {};
+    +MAX_HEIGHT - +scrollOffset > scaleSize(56) && isEndReached && setEndReached(false);
+  }
+
+  const onAnimatedIconBottom = (): void => {
+    Animated.timing(animationFlex, {
+      toValue: isEndReached ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+      easing: Easing.inOut(Easing.ease),
+    }).start();
+  }
+
   //---------------------- side effects ----------------------
 
   useEffect(() => {
@@ -96,13 +140,25 @@ const useConversationHooks = (props: ScreenProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    onAnimatedIconBottom();
+  }, [isEndReached])
+
   return {
     ref,
     conversations,
     userInfo,
+    loadMore,
+    isEndReached,
+    animationFlex,
     onSendMessage,
     onContentSizeChange,
-    onGroupConversation
+    onGroupConversation,
+    onLoadMore,
+    onEndReached,
+    onScroll,
+    onScrollToBottom,
+    onScrollEndDrag
   }
 }
 
