@@ -21,5 +21,5 @@ export const STORAGE_PATH = {
 }
 
 export const QUERY_CONFIG = {
-  LIMIT: 25
+  LIMIT: 20
 }

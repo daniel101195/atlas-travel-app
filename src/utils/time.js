@@ -31,5 +31,12 @@ export function timeSince(date) {
 
 export function formatDate(date, format = 'DD-MM-YYYY') {
   if (!date) return '';
-  return dayjs(date).format(format)
+  const day = dayjs(date).format('D');
+  const month = dayjs(date).format('M');
+  const year = dayjs(date).format('YYYY');
+  const today = new Date();
+  if (day == today.getDate() && month == (today.getMonth() + 1) && year == today.getFullYear()) {
+    return dayjs(date).format('HH:mm');
+  }
+  return dayjs(date).format(format);
 }

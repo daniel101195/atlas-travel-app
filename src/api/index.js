@@ -222,6 +222,30 @@ const onGetConversations = ({ roomId = '', dispatch }) => {
   return subscriber;
 }
 
+const onGetConversationsInitial = ({ roomId = '' }) => {
+  return new Promise((resolve, reject) => {
+    if (isEmpty(roomId)) resolve([]);
+    firestore()
+      .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+      .doc(roomId)
+      .collection(FIRESTORE_COLLECTIONS.MESSAGES)
+      .orderBy('createdAt')
+      .limitToLast(QUERY_CONFIG.LIMIT)
+      .get()
+      .then((snapshot) => {
+        const messages = [];
+        snapshot?.docs?.forEach?.(documentSnapshot => {
+          messages.push(documentSnapshot.data());
+        });
+        resolve(messages);
+      })
+      .catch(error => {
+        console.log('===>onGetConversationsInitial: ', error);
+        error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+      });
+  })
+}
+
 const onLoadMoreConversation = ({ roomId = '', createdAt }) => {
   return new Promise((resolve, reject) => {
     if (isEmpty(roomId) || isEmpty(createdAt)) resolve([]);
@@ -294,5 +318,5 @@ export {
   FIRESTORE_COLLECTIONS, onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onListenRoomChanged,
   onAuthStateChanged, onSetUserInfo, onGetUserInfo, onCheckRoomExist, onCreateNewRoom, onUploadAvatar,
   onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged, onGetConversations, onSendMessage,
-  onCreateConversation, updateLastMessage, updateLastSeen, onLoadMoreConversation
+  onCreateConversation, updateLastMessage, updateLastSeen, onLoadMoreConversation, onGetConversationsInitial
 }

@@ -8,28 +8,22 @@ import colors from "~/utils/colors";
 import { ITEM_TYPES } from '~/utils/constants';
 import { formatDate } from '~/utils/time';
 import { FONT_14 } from "~/utils/spacing";
+import HeaderSection from "../HeaderSection";
 
 const BubbleConversation: React.FC<BubbleConversationProps> = ({ email = '', item }) => {
-  const isSender = email === item?.sender;
-
-  const renderTimestamp = useCallback(() => {
-    return (
-      <CustomText customStyle={isSender ? styles.txtUpdatedAt : { ...styles.textReceiver, ...styles.txtUpdatedAt }}>
-        {formatDate(item?.updatedAt?.toDate?.(), 'DD-MM-YY')}
-      </CustomText>
-    )
-  }, [])
+  const { isShowTimestamp, createdAt, sender, type, content } = item || {};
+  const isSender = email === sender;
 
   const renderContent = useCallback((): ReactElement => {
-    if (item?.type === ITEM_TYPES.IMAGE) {
+    if (type === ITEM_TYPES.IMAGE) {
       return (
-        <Image style={styles.image} source={item?.content} />
+        <Image style={styles.image} source={content} />
       )
     }
     return (
-      <CustomText customStyle={isSender ? styles.textSender : styles.textReceiver}>{item?.content}</CustomText>
+      <CustomText customStyle={isSender ? styles.textSender : styles.textReceiver}>{content}</CustomText>
     )
-  }, [item?.type, item?.content])
+  }, [type, content])
 
   const renderSenderBubble = useCallback((): ReactElement => {
     return (
@@ -47,8 +41,18 @@ const BubbleConversation: React.FC<BubbleConversationProps> = ({ email = '', ite
     )
   }, [item])
 
+  const renderHeader = useCallback((): ReactElement => {
+    if (!isShowTimestamp) return null;
+    return (
+      <HeaderSection title={formatDate(createdAt.toDate?.())} />
+    )
+  }, [isShowTimestamp, createdAt])
+
   return (
-    isSender ? renderSenderBubble() : renderReceiverBubble()
+    <View>
+      {renderHeader()}
+      {isSender ? renderSenderBubble() : renderReceiverBubble()}
+    </View>
   )
 }
 

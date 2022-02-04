@@ -57,11 +57,14 @@ export interface MemberProps {
   email: string
 }
 export interface ConversationProps {
+  id: string,
   content: string,
-  createdAt: string,
+  createdAt: any,
   sender: string,
   type: ConversationType,
-  updatedAt: any
+  updatedAt: any,
+  isShowTimestamp?: boolean,
+  timestamp?: any
 }
 export interface UserProps {
   avatar: string,

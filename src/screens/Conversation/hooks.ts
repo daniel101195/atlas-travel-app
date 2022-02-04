@@ -1,20 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Easing } from 'react-native';
-import { ScreenProps, GroupConversationProps } from '~/index';
+import { ScreenProps, ConversationProps } from '~/index';
 import { renderHeaderLeft } from '~/utils/helpers';
 import {
   onGetConversations, onSendMessage as onSendMessageAPI,
   updateLastMessage, updateLastSeen, onLoadMoreConversation
 } from '~/api';
 import { GlobalContext } from '~/context';
-import { loadMoreConversation, updateConversations } from '~/context/actions';
+import { loadMoreConversation, clearConversation, addNewMessage } from '~/context/actions';
 import firestore from '@react-native-firebase/firestore';
 import { ITEM_TYPES } from '~/utils/constants';
 import { nanoid } from 'nanoid/non-secure';
-import { formatDate } from '~/utils/time';
 import colors from "~/utils/colors";
-import { cloneDeep } from "lodash-es";
 import { scaleSize } from "~/metrics";
+import { cloneDeep } from "lodash";
 
 let MAX_HEIGHT = 0;
 
@@ -26,7 +25,7 @@ const useConversationHooks = (props: ScreenProps) => {
   const [isEndReached, setEndReached] = useState(true);
 
   const { state: { conversations, userInfo }, dispatch } = useContext(GlobalContext);
-  const { participants, id: roomId, imageUrl, roomName, lastSeenBy } = props.route.params?.roomInfo;
+  const { participants, id: roomId, imageUrl, roomName } = props.route.params?.roomInfo;
   const participant = participants?.filter(user => user?.email !== userInfo?.email)?.[0];
   const roomImage = imageUrl || participant?.avatar;
 
@@ -53,8 +52,8 @@ const useConversationHooks = (props: ScreenProps) => {
       updatedAt: timestamp,
       type: ITEM_TYPES.TEXT
     };
+    dispatch(addNewMessage(messageData));
     onSendMessageAPI({ roomId, message: messageData });
-    dispatch(updateConversations([...conversations, messageData]));
     updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email, updatedAt: timestamp });
     updateLastSeen({ roomId, lastSeen: [userInfo?.email] });
   }
@@ -64,33 +63,47 @@ const useConversationHooks = (props: ScreenProps) => {
   }
 
   const onUpdateLastSeen = (): void => {
-    const newLastSeen = [...lastSeenBy, userInfo?.email];
-    updateLastSeen({ roomId, lastSeen: newLastSeen });
+    updateLastSeen({ roomId, lastSeen: [participant?.email, userInfo?.email] });
   }
 
   const onContentSizeChange = (): void => {
     isEndReached && onScrollToBottom();
-    const lastSender = conversations?.[conversations.length - 1]?.sender;
-    lastSender !== userInfo?.email && onUpdateLastSeen();
   }
 
-  const onGroupConversation = (key: string = 'createdAt'): Array<GroupConversationProps> => {
-    const cloneConversation = cloneDeep(conversations);
-    const arr = [];
+  // Using this func for Section List
+  // const onGroupConversation_2 = (key: string = 'createdAt'): Array<GroupConversationProps> => {
+  //   const cloneConversation = cloneDeep(conversations);
+  //   const arr = [];
 
-    cloneConversation.forEach(element => {
-      element.createdAt = formatDate(element?.createdAt?.toDate?.());
-    });
+  //   cloneConversation.forEach(element => {
+  //     element.createdAt = formatDate(element?.createdAt?.toDate?.());
+  //   });
 
-    const obj = cloneConversation.reduce(function (rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
-      return rv;
-    }, {});
+  //   const obj = cloneConversation.reduce(function (rv, x) {
+  //     (rv[x[key]] = rv[x[key]] || []).push(x);
+  //     return rv;
+  //   }, {});
 
-    for (const property in obj) {
-      arr.push({ title: property, data: obj[property] });
+  //   for (const property in obj) {
+  //     arr.push({ title: property, data: obj[property] });
+  //   }
+  //   return arr;
+  // };
+
+  const onGroupConversation = (): Array<ConversationProps> => {
+    const cloneArray = cloneDeep(conversations);
+    for (let index = 0; index < cloneArray.length; index++) {
+      if (index > 0) {
+        const element = cloneArray[index];
+        const prevElement = cloneArray[index - 1];
+        if (element && prevElement) {
+          element.timestamp = element?.createdAt?.toDate?.();
+          prevElement.timestamp = prevElement?.createdAt?.toDate?.();
+          element.isShowTimestamp = Date.parse(element.timestamp) - Date.parse(prevElement.timestamp) >= 300000;
+        }
+      }
     }
-    return arr;
+    return cloneArray;
   };
 
   const onLoadMore = (): void => {
@@ -111,12 +124,14 @@ const useConversationHooks = (props: ScreenProps) => {
     MAX_HEIGHT = height - H;
   }
 
-  const onScrollToBottom = () => {
-    ref?.current?.getScrollResponder()?.scrollToEnd?.();
+  const onScrollToBottom = (): void => {
+    setTimeout(() => {
+      ref.current?.scrollToEnd?.();
+    }, 50);
   }
 
   const onScrollEndDrag = (event): void => {
-    const { contentOffset: { y: scrollOffset }} = event?.nativeEvent || {};
+    const { contentOffset: { y: scrollOffset } } = event?.nativeEvent || {};
     +MAX_HEIGHT - +scrollOffset > scaleSize(56) && isEndReached && setEndReached(false);
   }
 
@@ -135,14 +150,21 @@ const useConversationHooks = (props: ScreenProps) => {
     onLoadMessages();
     setHeader();
     return () => {
-      unsubscribe();
-      dispatch(updateConversations([]));
+      unsubscribe?.();
+      dispatch(clearConversation());
     }
   }, [])
 
   useEffect(() => {
     onAnimatedIconBottom();
   }, [isEndReached])
+
+  useEffect(() => {
+    if (conversations?.length > 0 && !!userInfo) {
+      const lastSender = conversations?.[conversations.length - 1]?.sender;
+      lastSender !== userInfo?.email && onUpdateLastSeen();
+    }
+  }, [conversations, userInfo])
 
   return {
     ref,

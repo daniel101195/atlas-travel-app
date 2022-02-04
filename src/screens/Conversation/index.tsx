@@ -1,9 +1,8 @@
 import React, { ReactElement, useCallback } from "react";
 import { ConversationScreenProps, ScreenProps } from '~/index';
-import { StyleSheet, View, SectionList, Animated } from "react-native";
+import { StyleSheet, View, Animated, FlatList } from "react-native";
 import { useConversationHooks } from './hooks';
 import BubbleConversation from "./BubbleConversation";
-import HeaderSection from "./HeaderSection";
 import { Icon, MessageInput } from '~/components';
 import { scaleSize, Spacing } from "~/metrics";
 
@@ -15,12 +14,6 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
   const renderItem = useCallback(({ item }): ReactElement => {
     return (
       <BubbleConversation item={item} email={email} />
-    )
-  }, [])
-
-  const renderSectionHeader = useCallback(({ section: { title } }): ReactElement => {
-    return (
-      <HeaderSection title={title} />
     )
   }, [])
 
@@ -59,24 +52,42 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
 
   return (
     <View style={styles.container}>
-      {conversations?.length > 0 ? <SectionList
-        ref={ref}
-        style={styles.containerConversation}
-        onEndReachedThreshold={0}
-        scrollEventThrottle={500}
-        refreshing={loadMore}
-        contentContainerStyle={styles.containerContent}
-        showsVerticalScrollIndicator={false}
-        stickySectionHeadersEnabled={false}
-        keyExtractor={(item, index) => item?.updatedAt + index}
-        onScrollEndDrag={onScrollEndDrag}
-        onScroll={onScroll}
-        sections={onGroupConversation()}
-        onContentSizeChange={onContentSizeChange}
-        onEndReached={onEndReached}
-        onRefresh={onLoadMore}
-        renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader} /> : <View style={styles.container} />}
+      {true ?
+        // <SectionList
+        //   ref={ref}
+        //   style={styles.containerConversation}
+        //   onEndReachedThreshold={0}
+        //   scrollEventThrottle={500}
+        //   refreshing={loadMore}
+        //   contentContainerStyle={styles.containerContent}
+        //   showsVerticalScrollIndicator={false}
+        //   stickySectionHeadersEnabled={false}
+        //   keyExtractor={(item, index) => item?.updatedAt + index}
+        //   onScrollEndDrag={onScrollEndDrag}
+        //   onScroll={onScroll}
+        //   sections={onGroupConversation()}
+        //   onContentSizeChange={onContentSizeChange}
+        //   onEndReached={onEndReached}
+        //   onRefresh={onLoadMore}
+        //   renderItem={renderItem}
+        //   renderSectionHeader={renderSectionHeader} />
+        <FlatList
+          ref={ref}
+          data={onGroupConversation()}
+          style={styles.containerConversation}
+          onEndReachedThreshold={0}
+          scrollEventThrottle={500}
+          refreshing={loadMore}
+          contentContainerStyle={styles.containerContent}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item?.id}
+          onScrollEndDrag={onScrollEndDrag}
+          onScroll={onScroll}
+          onContentSizeChange={onContentSizeChange}
+          onEndReached={onEndReached}
+          onRefresh={onLoadMore}
+          renderItem={renderItem} />
+        : <View style={styles.container} />}
       {renderIconScrollDown()}
       {renderInput()}
     </View>

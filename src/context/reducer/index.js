@@ -28,22 +28,32 @@ const globalReducer = (state = initialState, action) => {
       }
     }
     case actionType.UPDATE_CONVERSARTIONS: {
-      if (!!action.conversations && !!state.conversations &&
-        action.conversations?.length > 0 && state.conversations.length > 0) {
-
-        const lastId = action.conversations[action.conversations.length - 1].id;
-        const id = state.conversations[state.conversations.length - 1].id;
-        return {
-          ...state,
-          conversations: lastId === id && !!id ?
-            state.conversations :
-            action.conversations
-        }
-      } else {
+      if (state.conversations.length === 0) {
         return {
           ...state,
           conversations: action.conversations
         }
+      } else {
+        const lastMessage = action.conversations?.[action.conversations.length - 1];
+        const lastMessage2 = state.conversations?.[state.conversations.length - 1];
+        return {
+          ...state,
+          conversations: lastMessage?.id !== lastMessage2?.id ?
+            state.conversations.concat(lastMessage) :
+            state.conversations
+        }
+      }
+    }
+    case actionType.ADD_NEW_MESSAGE: {
+      return {
+        ...state,
+        conversations: state.conversations.concat(action.newMessage)
+      }
+    }
+    case actionType.CLEAR_CONVERSARTIONS: {
+      return {
+        ...state,
+        conversations: []
       }
     }
     default: return state

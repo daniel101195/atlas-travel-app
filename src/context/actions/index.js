@@ -24,3 +24,12 @@ export const loadMoreConversation = (conversations) => ({
   type: actionType.LOAD_MORE_CONVERSATIONS,
   conversations
 })
+
+export const clearConversation = () => ({
+  type: actionType.CLEAR_CONVERSARTIONS
+})
+
+export const addNewMessage = (newMessage) => ({
+  type: actionType.ADD_NEW_MESSAGE,
+  newMessage
+})
