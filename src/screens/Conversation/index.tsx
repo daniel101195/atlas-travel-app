@@ -1,6 +1,7 @@
 import React, { ReactElement, useCallback } from "react";
 import { ConversationScreenProps, ScreenProps } from '~/index';
 import { StyleSheet, View, Animated, FlatList } from "react-native";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useConversationHooks } from './hooks';
 import BubbleConversation from "./BubbleConversation";
 import { Icon, MessageInput } from '~/components';
@@ -38,7 +39,9 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
               extrapolate: "clamp",
             })
           }}>
-          <Icon name='arrow-circle-down' type='material' size={scaleSize(32)} onPress={onScrollToBottom} />
+          <TouchableOpacity onPress={onScrollToBottom}>
+            <Icon name='arrow-circle-down' type='material' size={scaleSize(32)} />
+          </TouchableOpacity>
         </Animated.View>
       </View>
     )
@@ -52,7 +55,7 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
 
   return (
     <View style={styles.container}>
-      {true ?
+      {conversations.length > 0 ?
         // <SectionList
         //   ref={ref}
         //   style={styles.containerConversation}
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   containerScrollBottom: {
     paddingBottom: Spacing.S,
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 999,
     bottom: Spacing.M
   }
 })

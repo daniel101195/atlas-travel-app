@@ -16,9 +16,10 @@ import { scaleSize } from "~/metrics";
 import { cloneDeep } from "lodash";
 
 let MAX_HEIGHT = 0;
+let unsubscribe;
+const INTERVAL_MESSAGE = 300000;
 
 const useConversationHooks = (props: ScreenProps) => {
-  let unsubscribe = null;
   const ref = useRef(null);
   const animationFlex = useRef(new Animated.Value(0)).current;
   const [loadMore, setLoadMore] = useState(false);
@@ -99,7 +100,7 @@ const useConversationHooks = (props: ScreenProps) => {
         if (element && prevElement) {
           element.timestamp = element?.createdAt?.toDate?.();
           prevElement.timestamp = prevElement?.createdAt?.toDate?.();
-          element.isShowTimestamp = Date.parse(element.timestamp) - Date.parse(prevElement.timestamp) >= 300000;
+          element.isShowTimestamp = Date.parse(element.timestamp) - Date.parse(prevElement.timestamp) >= INTERVAL_MESSAGE;
         }
       }
     }

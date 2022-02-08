@@ -31,7 +31,7 @@ const FontSize = {
 }
 
 const ComponentSize = {
-  buttonHeight: 42,
+  buttonHeight: scaleSize(42),
 }
 
 export { Spacing, Radius, FontSize, ComponentSize, scaleSize } 

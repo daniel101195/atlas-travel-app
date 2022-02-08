@@ -3,7 +3,7 @@ import { NavigationContainer, useNavigation, useRoute, getFocusedRouteNameFromRo
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import React, { useContext, useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { CustomText, Image, Button, Icon } from '~/components';
+import { CustomText, Image, Button } from '~/components';
 import { screens, stacks, sideMenu, sideMenuFooter } from './screens';
 import Dashboard from '~/screens/Dashboard';
 import SignIn from '~/screens/SignIn';
@@ -23,26 +23,10 @@ import Conversation from '~/screens/Conversation';
 import { onUploadAvatar, onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged } from '~/api';
 import { onGetImageFromLibrary } from '~/utils/media';
 import { isEmpty } from 'lodash';
+import { screenOptions } from './helper';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
-const screenOptions = ({ navigation }, otherOpts) => ({
-  headerTitleStyle: styles.headerTitle,
-  headerTransparent: true,
-  headerLeft: () => renderCloseIcon(navigation),
-  headerTitleAlign: 'center',
-  ...otherOpts
-})
-
-const renderCloseIcon = ({ canGoBack, goBack }) => {
-  return (
-    canGoBack ?
-      <TouchableOpacity onPress={goBack} style={styles.iconBack}>
-        <Icon name="close" size={24} color={colors.bgIcon} />
-      </TouchableOpacity> : null
-  )
-}
 
 const MainStackNavigation = () => {
   return (
@@ -74,7 +58,7 @@ const MainStackNavigation = () => {
 
 const AuthenticationStackNavigation = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name={screens.dashboard.name}
         component={Dashboard}
@@ -84,15 +68,17 @@ const AuthenticationStackNavigation = () => {
       <Stack.Screen
         name={screens.signIn.name}
         component={SignIn}
-        options={(navigation) => screenOptions(navigation)} />
+        options={screenOptions} />
       <Stack.Screen
         name={screens.signUp.name}
         component={SignUp}
-        options={(navigation) => screenOptions(navigation)} />
+        options={screenOptions} />
       <Stack.Screen
         name={screens.email.name}
         component={Email}
-        options={(navigation) => screenOptions(navigation, { headerShown: false })} />
+        options={{
+          headerShown: false
+        }} />
     </Stack.Navigator>
   )
 }
@@ -103,7 +89,7 @@ const ConversationStack = () => {
       <Stack.Screen
         name={screens.conversation.name}
         component={Conversation}
-        options={(navigation) => screenOptions(navigation)}
+        options={screenOptions}
       />
     </Stack.Navigator>
   )
@@ -255,8 +241,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontFamily: 'Montserrat-Medium',
     letterSpacing: Spacing.XXS,
-    color: colors.white,
-    alignSelf: 'center'
+    color: colors.white
   },
   iconBack: {
     marginStart: Spacing.M

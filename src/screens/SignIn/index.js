@@ -1,20 +1,27 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import colors from '~/utils/colors';
 import { login_bg_2 } from '~/utils/images';
 import { Input, CustomText, Toggle, BaseScreen, Button } from '~/components';
-import { Radius, Spacing } from '~/metrics';
+import { Radius, scaleSize, Spacing } from '~/metrics';
 import useLoginHooks from './hooks';
 import { LocalizeString } from '~/localize';
 import { memoDeepEqual } from '~/utils/helpers'
 
 const SignIn = (props) => {
   const { isRemember, isLoading, isShowPass, errorMessage, loginData,
-    onShowPass, onHidePass, onSubmit, onChangePassword, onChangeUsername, 
+    onShowPass, onHidePass, onSubmit, onChangePassword, onChangeUsername,
     onChangeRememberLogin, onNavigateSignUp } = useLoginHooks(props);
 
-  const renderButtonLogin = useCallback(() => <Button onPress={onSubmit} title={LocalizeString.titleLogin} />,
-    [loginData, errorMessage, isRemember])
+  const renderButtonLogin = useCallback(() => {
+    return (
+      <Button
+        onPress={onSubmit}
+        title={LocalizeString.titleLogin}
+        containerStyle={{ marginTop: scaleSize(32) }}
+      />
+    )
+  }, [loginData, errorMessage, isRemember])
 
   const renderInputs = useCallback(() => {
     const iconEmail = errorMessage === '' ?
@@ -27,6 +34,7 @@ const SignIn = (props) => {
           onChangeText={onChangeUsername}
           value={loginData?.username}
           iconName={iconEmail}
+          containerStyle={{ marginVertical: Spacing.L }}
           iconColor={colors.primaryPink}
           iconType='material-community' />
         <Input
@@ -74,13 +82,19 @@ const SignIn = (props) => {
   return (
     <BaseScreen
       urlImageBg={login_bg_2}
-      isLoading={isLoading}
-      footer={renderFooter}
-      containerChldrenStyle={{ justifyContent: 'center' }}>
-      <View style={styles.containerChild}>
-        {renderInputs()}
-        {renderButtonLogin()}
+      navigation={props.navigation}
+      headerTitle={LocalizeString.titleSignIn}
+      isBasicHeader={true}
+      isShowHeader={true}
+      isAwareKeyboard={true}
+      isLoading={isLoading}>
+      <View style={styles.containerContent}>
+        <View style={styles.containerChild}>
+          {renderInputs()}
+          {renderButtonLogin()}
+        </View>
       </View>
+      {renderFooter()}
     </BaseScreen>
   )
 }
@@ -90,22 +104,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerContent: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    zIndex: 1,
+    flex: 0.96,
     justifyContent: 'center',
+    paddingHorizontal: Spacing.L,
   },
   containerInput: {
-    flex: 0.9,
     justifyContent: 'center'
   },
   containerChild: {
     backgroundColor: colors.bgIcon,
-    flex: 0.5,
     borderRadius: Radius.M,
     paddingHorizontal: Spacing.L,
-    marginHorizontal: Spacing.L
+    paddingTop: Spacing.XL * 2,
+    paddingBottom: Spacing.XL
   },
   containerFooter: {
     flexDirection: 'row',
@@ -122,12 +133,6 @@ const styles = StyleSheet.create({
   },
   password: {
     marginVertical: Spacing.S
-  },
-  btnLogin: {
-    height: 42,
-    borderRadius: Radius.XL,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   line: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',

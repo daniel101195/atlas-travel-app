@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableNativeFeedback, Animated, Dimensions } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Animated, Dimensions } from 'react-native';
 import { Radius, Spacing } from '../../metrics';
 import colors from '../../utils/colors';
 import { memoDeepEqual } from '../../utils/helpers';
@@ -57,13 +57,13 @@ const BottomSheet = ({ children, isVisible = false, onChangeVisible, ratio = 0.5
   }, [isVisible])
 
   return (
-    isVisible ? <TouchableNativeFeedback onPress={handleClose}>
+    isVisible ? <TouchableWithoutFeedback onPress={handleClose}>
       <Animated.View style={{ ...styles.container, ...StyleSheet.absoluteFill, ...backdrop }}>
         <Animated.View style={{ ...styles.popup(ratio), ...slideUp }}>
           {children}
         </Animated.View>
       </Animated.View>
-    </TouchableNativeFeedback> : null
+    </TouchableWithoutFeedback> : null
   )
 }
 

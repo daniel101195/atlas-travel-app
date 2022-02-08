@@ -1,4 +1,6 @@
 import { StackActions, CommonActions } from '@react-navigation/native';
+import { Spacing } from '~/metrics';
+import colors from '~/utils/colors';
 
 const getStackAction = (type, screenName, params, popOffset) => {
   switch (type) {
@@ -40,3 +42,15 @@ export const redirect = (navigation, screenName = '', type = REDIRECT_TYPE.navig
 export const redirect_comp = (comp, navigation, screenName = '', params = {}) => {
   navigation.navigate(comp, { screen: screenName, params });
 }
+
+export const screenOptions = ({ navigation }, otherOpts) => ({
+  headerTitleStyle: {
+    fontFamily: 'Montserrat-Medium',
+    letterSpacing: Spacing.XXS,
+    color: colors.black
+  },
+  headerTransparent: true,
+  // headerLeft: () => renderCloseIcon(navigation),
+  headerTitleAlign: 'center',
+  ...otherOpts
+})

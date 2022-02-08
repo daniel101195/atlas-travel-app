@@ -98,16 +98,22 @@ const SignUp = (props) => {
 
   return (
     <BaseScreen
-      footer={renderFooter}
       urlImageBg={sign_up_bg}
-      isLoading={isLoading}
-      containerChldrenStyle={{ justifyContent: 'center' }}>
-      <View style={styles.containerChild}>
-        {renderHeaderTitle()}
-        {renderInputs()}
-        {renderAgreeTerms()}
-        {renderButtonSignup()}
+      navigation={props.navigation}
+      headerTitle={LocalizeString.titleSignUp}
+      isBasicHeader={true}
+      isShowHeader={true}
+      isAwareKeyboard={true}
+      isLoading={isLoading}>
+      <View style={{ flex: 0.96, justifyContent: 'center' }}>
+        <View style={styles.containerChild}>
+          {renderHeaderTitle()}
+          {renderInputs()}
+          {renderAgreeTerms()}
+          {renderButtonSignup()}
+        </View>
       </View>
+      {renderFooter()}
     </BaseScreen>
   )
 }
@@ -139,7 +145,8 @@ const styles = StyleSheet.create({
   containerButton: {
     flex: 1,
     alignSelf: "stretch",
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginBottom: Spacing.S
   },
   containerFooter: {
     flexDirection: 'row',

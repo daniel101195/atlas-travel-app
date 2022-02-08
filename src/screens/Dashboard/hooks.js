@@ -7,6 +7,7 @@ import { GlobalContext } from '~/context';
 import { changeLanguage } from '~/context/actions';
 import { onAuthStateChanged } from '~/api';
 import { getUserInfo } from '~/storage';
+import messaging from '@react-native-firebase/messaging';
 
 const useDashboardHooks = (props) => {
   const { dispatch } = useContext(GlobalContext);
@@ -36,10 +37,22 @@ const useDashboardHooks = (props) => {
     const data = await getUserInfo();
   }
 
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
   //----------------------------- Side Effects -----------------------------
 
   useEffect(() => {
     onGetUserInfo();
+    requestUserPermission();
     const subscriber = onAuthStateChanged(onAuthStateChange);
     return subscriber; // unsubscribe on unmount
   }, []);

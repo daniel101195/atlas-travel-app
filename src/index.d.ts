@@ -12,7 +12,9 @@ export interface HeaderProps {
   haveRightIcons?: Boolean,
   isDarkStyle?: Boolean,
   childTab?: Object,
-  isShowLine?: Boolean
+  isShowLine?: Boolean,
+  navigation?: any,
+  isBasicHeader?: boolean
 }
 
 export interface ScreenProps {

@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { HeaderProps } from '~/index';
 import { CustomText, Icon, Image } from '..';
 import { StyleSheet, View } from "react-native";
-import { Spacing } from '../../metrics';
+import { Spacing, scaleSize } from '../../metrics';
 import { icon_hamburger } from '../../utils/images';
 import colors from "~/utils/colors";
 import { isEmpty } from "lodash-es";
+import { isIphoneX, STATUS_BAR_HEIGHT } from "~/utils/dimensions";
 
+const Header: React.FC<HeaderProps> = ({ onToggleDrawer = () => null, title = '', navigation,
+  haveRightIcons = true, isDarkStyle = false, childTab = {}, isShowLine = false, isBasicHeader }) => {
 
-const Header: React.FC<HeaderProps> = ({ onToggleDrawer = () => null, title = '', 
-  haveRightIcons = true, isDarkStyle = false, childTab = {}, isShowLine = false }) => {
+  const renderCloseIcon = useCallback(() => {
+    const { canGoBack, goBack } = navigation || {};
+    return (
+      canGoBack && typeof goBack === 'function' ?
+        <View style={styles.containerIconBack}>
+          <Icon name="close" size={scaleSize(24)} color={colors.bgIcon} onPress={goBack} type='material-community' />
+        </View> : null
+    )
+  }, [navigation])
+
+  const renderTitle = useCallback(() => {
+    return (
+      <CustomText h4 customStyle={styles.txtHeader}>{title}</CustomText>
+    )
+  }, [title])
+
+  if (isBasicHeader) {
+    return (
+      <View style={styles.containerScreenHeader}>
+        {renderCloseIcon()}
+        {renderTitle()}
+      </View>
+    )
+  }
 
   if (isDarkStyle) {
     return (
@@ -61,6 +86,19 @@ const styles = StyleSheet.create({
     flexBasis: 100,
     justifyContent: 'flex-end'
   },
+  containerScreenHeader: {
+    zIndex: 4,
+    position: 'absolute',
+    flexDirection: 'row',
+    top: isIphoneX() ? STATUS_BAR_HEIGHT : scaleSize(0),
+    right: 0,
+    left: 0
+  },
+  containerIconBack: {
+    marginStart: Spacing.M,
+    flex: 0.47,
+    alignSelf: 'baseline'
+  },
   header: {
     paddingTop: Spacing.S,
     paddingHorizontal: Spacing.L,
@@ -78,6 +116,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     height: 2,
   },
+  txtHeader: {
+    fontFamily: 'Montserrat-Medium',
+    letterSpacing: Spacing.XXS,
+    color: colors.white
+  }
 })
 
 export default React.memo(Header)

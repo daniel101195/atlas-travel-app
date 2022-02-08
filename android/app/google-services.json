@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "855261335455",
+    "project_id": "atlastravel-4c66e",
+    "storage_bucket": "atlastravel-4c66e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855261335455:android:ccb2c06791aec2830477aa",
+        "android_client_info": {
+          "package_name": "atlast.travel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "855261335455-6pt2bo7l498o79pboqkhnam21fi331cb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeIsMxRStKyUn9XPPB6PM6lb2XrIzPSb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855261335455-6pt2bo7l498o79pboqkhnam21fi331cb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "855261335455-h2on4c8qdibus0rnv5132gjpo51lg52n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "atlas.travel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855261335455:android:650e2821060fe8470477aa",
+        "android_client_info": {
+          "package_name": "com.atlasapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "855261335455-6pt2bo7l498o79pboqkhnam21fi331cb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeIsMxRStKyUn9XPPB6PM6lb2XrIzPSb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855261335455-6pt2bo7l498o79pboqkhnam21fi331cb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "855261335455-h2on4c8qdibus0rnv5132gjpo51lg52n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "atlas.travel"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

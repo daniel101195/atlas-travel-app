@@ -1,28 +1,55 @@
-import React, { useCallback } from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import React, { useCallback, useState, useEffect } from 'react';
+import { StyleSheet, View, SafeAreaView, Keyboard, StatusBar, Platform } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import LinearGradient from 'react-native-linear-gradient';
-import { LoadingView, ImageBackground } from '~/components';
+import { LoadingView, ImageBackground, Header } from '~/components';
+import { DEVICE_HEIGHT, STATUS_BAR_HEIGHT } from '~/utils/dimensions';
 import colors from '~/utils/colors';
 import { memoDeepEqual } from '~/utils/helpers';
+import { scaleSize } from '~/metrics';
 
-const BaseScreen = ({ children, footer, header, isLoading = false, containerStyle = {},
-  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, renderPopup }) => {
+const isNotAndroid = Platform.OS !== 'android';
+const CONTENT_HEIGHT = DEVICE_HEIGHT - STATUS_BAR_HEIGHT;
 
-  const renderFooter = useCallback(() => {
-    if (!footer) return null;
-    return (
-      <View style={styles.containerFooter}>
-        {footer()}
-      </View>
-    )
-  }, [footer])
+const BaseScreen = ({ children, footer, isShowHeader = false, isLoading = false, containerStyle = {}, isAwareKeyboard = false,
+  urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, renderPopup, customScrollView = {}, navigation = {},
+  headerTitle = '', isBasicHeader = false }) => {
 
-  const renderHeader = useCallback(() => {
-    if (!header) return null;
-    return (
-      header
-    )
-  }, [header])
+  const [isScrollEnabled, setScrollEnabled] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow', () => {
+        setScrollEnabled(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide', () => {
+        setScrollEnabled(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove?.();
+      keyboardDidShowListener.remove?.();
+    };
+  }, []);
+
+  // const renderFooter = useCallback(() => {
+  //   if (!footer) return null;
+  //   return (
+  //     <View style={styles.containerFooter}>
+  //       {footer()}
+  //     </View>
+  //   )
+  // }, [footer])
+
+  // const renderHeader = useCallback(() => {
+  //   if (!header) return null;
+  //   return (
+  //     header
+  //   )
+  // }, [header])
 
   const renderBackground = useCallback(() => {
     if (!urlImageBg) return null
@@ -47,22 +74,45 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
 
   const renderContent = useCallback(() => {
     return (
-      <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
-        {renderHeader()}
-        <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
+      isAwareKeyboard ? <KeyboardAwareScrollView
+        contentContainerStyle={{ ...styles.containerScrollView, ...customScrollView }}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={isScrollEnabled}
+        enableOnAndroid={true}>
+        <View style={{ height: CONTENT_HEIGHT }}>
           {children}
         </View>
-        {renderFooter()}
-      </SafeAreaView>
+      </KeyboardAwareScrollView> :
+        <SafeAreaView style={{ ...styles.containerContent, ...containerStyle }}>
+          <View style={{ ...styles.containerBody(!!footer), ...containerChldrenStyle }}>
+            {children}
+          </View>
+        </SafeAreaView>
     )
-  }, [header, children, footer])
+  }, [children, footer, isAwareKeyboard, isScrollEnabled])
+
+  const renderHeader = useCallback(() => {
+    if (!isShowHeader) return null
+    return (
+      <Header navigation={navigation} title={headerTitle} isBasicHeader={isBasicHeader}/>
+    )
+  }, [isShowHeader, navigation, headerTitle, isBasicHeader])
+
+  const renderStatusBar = useCallback(() => {
+    if (isNotAndroid) return null
+    return (
+      <StatusBar translucent backgroundColor="transparent" />
+    )
+  }, [isNotAndroid])
 
   return (
     <View style={styles.container}>
+      {renderStatusBar()}
       {renderBackground()}
       {renderGradient()}
-      <View style={{ zIndex: 3, flex: 1, ...StyleSheet.absoluteFill }}>
-        {renderContent()}
+      <View style={styles.containerSurface}>
+        {renderHeader?.()}
+        {renderContent?.()}
         {renderLoadingView?.()}
         {bottomSheet?.()}
         {renderPopup?.()}
@@ -73,7 +123,7 @@ const BaseScreen = ({ children, footer, header, isLoading = false, containerStyl
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   containerGradient: {
     flex: 1,
@@ -93,11 +143,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   containerBody: (haveFooter) => ({
-    flex: haveFooter ? 0.9 : 1,
+    flex: 1,
   }),
   containerFooter: {
     flex: 0.1
   },
+  containerSurface: {
+    flex: 1,
+    zIndex: 3,
+    ...StyleSheet.absoluteFill,
+    top: isNotAndroid ? scaleSize(0) : STATUS_BAR_HEIGHT
+  },
+  containerScrollView: {
+    flexGrow: 1,
+    height: CONTENT_HEIGHT
+  }
 })
 
 export default memoDeepEqual(BaseScreen)
