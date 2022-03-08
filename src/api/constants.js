@@ -17,7 +17,8 @@ export const FIRESTORE_COLLECTIONS = {
 }
 
 export const STORAGE_PATH = {
-  avatars: '/avatars'
+  avatars: '/avatars',
+  conversations: '/conversations'
 }
 
 export const QUERY_CONFIG = {

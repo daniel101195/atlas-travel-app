@@ -1,12 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import messaging from '@react-native-firebase/messaging';
 import { renderErrorMessage, renderSuccessMessage } from '../utils/helpers';
 import { LocalizeString } from '../localize';
 import { updateMessages, updateUserInfo, updateConversations } from '~/context/actions';
 import { isEmpty } from 'lodash';
 import { Platform } from 'react-native';
-import { ConversationProps } from '~/index';
 import { ERRORS_FIREBASE, FIRESTORE_COLLECTIONS, STORAGE_PATH, QUERY_CONFIG } from './constants';
 
 const onAuthStateChanged = (callback = () => { }) => {
@@ -96,14 +96,14 @@ const onSetUserInfo = ({ userInfo = {} }) => {
   })
 }
 
-const onUpdateUserInfo = ({ userInfo = {}, email }) => {
+const onUpdateUserInfo = ({ userInfo = {}, email, shouldShowMessage = true }) => {
   return new Promise((resolve, reject) => {
     firestore()
       .collection(FIRESTORE_COLLECTIONS.USERS)
       .doc(email)
       .update(userInfo)
       .then(() => {
-        renderSuccessMessage(LocalizeString.titleUpdatedInfoSuccess);
+        shouldShowMessage && renderSuccessMessage(LocalizeString.titleUpdatedInfoSuccess);
         resolve(true);
       })
       .catch(error => {
@@ -180,9 +180,21 @@ const onUploadAvatar = async ({ image = {}, userName = '' }) => {
   return filename;
 }
 
-const onGetAvatarUrl = async ({ imageName = '' }) => {
+const onUploadImageConversation = async ({ image = {}, roomName = '' }) => {
+  if (isEmpty(image)) return;
+
+  const { uri, type } = image;
+  const fileType = type?.substr(type.indexOf('/') + 1, type.length - 1);
+  const filename = `${roomName?.toLowerCase?.()}.${fileType}`;
+  const reference = storage().ref(`${STORAGE_PATH.conversations}/${filename}`);
+  const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+  await reference.putFile(uploadUri);
+  return filename;
+}
+
+const onGetImageUrl = async ({ imageName = '', path = STORAGE_PATH.avatars }) => {
   if (isEmpty(imageName)) return;
-  const reference = storage().ref(`${STORAGE_PATH.avatars}/${imageName}`);
+  const reference = storage().ref(`${path}/${imageName}`);
   const url = await reference.getDownloadURL();
   return url;
 }
@@ -250,24 +262,24 @@ const onLoadMoreConversation = ({ roomId = '', createdAt }) => {
   return new Promise((resolve, reject) => {
     if (isEmpty(roomId) || isEmpty(createdAt)) resolve([]);
     firestore()
-    .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
-    .doc(roomId)
-    .collection(FIRESTORE_COLLECTIONS.MESSAGES)
-    .orderBy('createdAt')
-    .endBefore(createdAt)
-    .limitToLast(QUERY_CONFIG.LIMIT)
-    .get()
-    .then((snapshot) => {
-      const messages = [];
-      snapshot?.docs?.forEach?.(documentSnapshot => {
-        messages.push(documentSnapshot.data());
-      });
-      resolve(messages);
-    })
-    .catch(error => {
-      console.log('===>onLoadMoreConversation: ', error);
-      error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
-    })
+      .collection(FIRESTORE_COLLECTIONS.CONVERSATION)
+      .doc(roomId)
+      .collection(FIRESTORE_COLLECTIONS.MESSAGES)
+      .orderBy('createdAt')
+      .endBefore(createdAt)
+      .limitToLast(QUERY_CONFIG.LIMIT)
+      .get()
+      .then((snapshot) => {
+        const messages = [];
+        snapshot?.docs?.forEach?.(documentSnapshot => {
+          messages.push(documentSnapshot.data());
+        });
+        resolve(messages);
+      })
+      .catch(error => {
+        console.log('===>onLoadMoreConversation: ', error);
+        error?.code && renderErrorMessage(ERRORS_FIREBASE[error.code]);
+      })
   })
 }
 
@@ -288,7 +300,7 @@ const onSendMessage = ({ message = {}, roomId = '' }) => {
   })
 }
 
-const updateLastMessage = ({ roomId = '', lastMessage = '', lastSender = '', updatedAt }) => {
+const updateLastMessage = ({ roomId = '', lastMessage = '' || {}, lastSender = '', updatedAt }) => {
   firestore()
     .collection(FIRESTORE_COLLECTIONS.MESSAGING)
     .doc(roomId)
@@ -298,7 +310,7 @@ const updateLastMessage = ({ roomId = '', lastMessage = '', lastSender = '', upd
       updatedAt
     })
     .catch((error) => {
-      console.log('===>onSendMessage: ', error);
+      console.log('===>onSendMessageError: ', error);
     })
 }
 
@@ -310,13 +322,35 @@ const updateLastSeen = ({ roomId = '', lastSeen = [] }) => {
       lastSeenBy: lastSeen
     })
     .catch((error) => {
-      console.log('===>updateLastSeen: ', error);
+      console.log('===>updateLastSeenError: ', error);
     })
+}
+
+const getFCMToken = () => {
+  return new Promise((resolve, reject) => {
+    messaging()
+      .getToken()
+      .then((resp) => {
+        resolve(resp);
+      })
+      .catch((error) => {
+        console.log('===>getFCMTokenError: ', error);
+      });
+  })
+}
+
+const subscribeCloudMessage = () => {
+  const subscriber = messaging()
+    .onMessage(async remoteMessage => {
+      console.log('===>remoteMessage: ', remoteMessage);
+    });
+  return subscriber;
 }
 
 export {
   FIRESTORE_COLLECTIONS, onSignIn, onSignUp, onUpdateUserProfile, onSignOut, onListenRoomChanged,
-  onAuthStateChanged, onSetUserInfo, onGetUserInfo, onCheckRoomExist, onCreateNewRoom, onUploadAvatar,
-  onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged, onGetConversations, onSendMessage,
-  onCreateConversation, updateLastMessage, updateLastSeen, onLoadMoreConversation, onGetConversationsInitial
+  onAuthStateChanged, onSetUserInfo, onGetUserInfo, onCheckRoomExist, onCreateNewRoom, onUploadAvatar, onUploadImageConversation,
+  onGetImageUrl, onUpdateUserInfo, onListentUserInfoChanged, onGetConversations, onSendMessage,
+  onCreateConversation, updateLastMessage, updateLastSeen, onLoadMoreConversation, onGetConversationsInitial,
+  getFCMToken, subscribeCloudMessage
 }

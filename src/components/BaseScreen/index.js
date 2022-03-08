@@ -13,7 +13,7 @@ const CONTENT_HEIGHT = DEVICE_HEIGHT - STATUS_BAR_HEIGHT;
 
 const BaseScreen = ({ children, footer, isShowHeader = false, isLoading = false, containerStyle = {}, isAwareKeyboard = false,
   urlImageBg, isGradient = true, containerChldrenStyle = {}, bottomSheet, renderPopup, customScrollView = {}, navigation = {},
-  headerTitle = '', isBasicHeader = false }) => {
+  headerTitle = '', isBasicHeader = false, isDarkStyle = false, isShowLine = true }) => {
 
   const [isScrollEnabled, setScrollEnabled] = useState(false);
 
@@ -34,22 +34,6 @@ const BaseScreen = ({ children, footer, isShowHeader = false, isLoading = false,
       keyboardDidShowListener.remove?.();
     };
   }, []);
-
-  // const renderFooter = useCallback(() => {
-  //   if (!footer) return null;
-  //   return (
-  //     <View style={styles.containerFooter}>
-  //       {footer()}
-  //     </View>
-  //   )
-  // }, [footer])
-
-  // const renderHeader = useCallback(() => {
-  //   if (!header) return null;
-  //   return (
-  //     header
-  //   )
-  // }, [header])
 
   const renderBackground = useCallback(() => {
     if (!urlImageBg) return null
@@ -78,6 +62,7 @@ const BaseScreen = ({ children, footer, isShowHeader = false, isLoading = false,
         contentContainerStyle={{ ...styles.containerScrollView, ...customScrollView }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={isScrollEnabled}
+        keyboardShouldPersistTaps='handled'
         enableOnAndroid={true}>
         <View style={{ height: CONTENT_HEIGHT }}>
           {children}
@@ -94,16 +79,17 @@ const BaseScreen = ({ children, footer, isShowHeader = false, isLoading = false,
   const renderHeader = useCallback(() => {
     if (!isShowHeader) return null
     return (
-      <Header navigation={navigation} title={headerTitle} isBasicHeader={isBasicHeader}/>
+      <Header navigation={navigation} title={headerTitle} isShowLine={isShowLine}
+        isBasicHeader={isBasicHeader} isDarkStyle={isDarkStyle} />
     )
-  }, [isShowHeader, navigation, headerTitle, isBasicHeader])
+  }, [isShowHeader, navigation, headerTitle, isBasicHeader, isDarkStyle, isShowLine])
 
   const renderStatusBar = useCallback(() => {
     if (isNotAndroid) return null
     return (
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar barStyle={isDarkStyle ? 'dark-content' : 'light-content'} translucent backgroundColor="transparent" />
     )
-  }, [isNotAndroid])
+  }, [isNotAndroid, isDarkStyle])
 
   return (
     <View style={styles.container}>

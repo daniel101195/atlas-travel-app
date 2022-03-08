@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Radius, Spacing } from '~/metrics';
 import colors from '~/utils/colors';
-import { DEVICE_HEIGHT } from '~/utils/dimensions';
 import { memoDeepEqual } from '~/utils/helpers';
 
 const LoadingView = ({ isVisible = true }) => {
@@ -17,7 +16,7 @@ const LoadingView = ({ isVisible = true }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: DEVICE_HEIGHT,
+    height: '100%',
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',

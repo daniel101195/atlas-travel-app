@@ -63,12 +63,11 @@ const Messaging: React.FC<MessagingProps> = (props: ScreenProps): ReactElement =
       isShowFloating={true}
       isGradient={false}
       renderPopup={renderPopup}
-      header={<Header
-        onToggleDrawer={onToggleDrawer}
-        isDarkStyle={true}
-        isShowLine={true}
-        title={LocalizeString.titleMessage} />
-      }>
+      isShowHeader={true}
+      isDarkStyle={true}
+      isShowLine={true}
+      headerTitle={LocalizeString.titleMessage}
+      navigation={props.navigation}>
       {renderListMessaging()}
       {renderFloatingButton()}
     </BaseScreen>

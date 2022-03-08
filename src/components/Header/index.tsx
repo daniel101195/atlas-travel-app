@@ -8,8 +8,8 @@ import colors from "~/utils/colors";
 import { isEmpty } from "lodash-es";
 import { isIphoneX, STATUS_BAR_HEIGHT } from "~/utils/dimensions";
 
-const Header: React.FC<HeaderProps> = ({ onToggleDrawer = () => null, title = '', navigation,
-  haveRightIcons = true, isDarkStyle = false, childTab = {}, isShowLine = false, isBasicHeader }) => {
+const Header: React.FC<HeaderProps> = ({ title = '', navigation, haveRightIcons = true,
+  isDarkStyle = false, childTab = {}, isShowLine = false, isBasicHeader }) => {
 
   const renderCloseIcon = useCallback(() => {
     const { canGoBack, goBack } = navigation || {};
@@ -26,6 +26,10 @@ const Header: React.FC<HeaderProps> = ({ onToggleDrawer = () => null, title = ''
       <CustomText h4 customStyle={styles.txtHeader}>{title}</CustomText>
     )
   }, [title])
+
+  const onToggleDrawer = () => {
+    navigation?.toggleDrawer?.();
+  }
 
   if (isBasicHeader) {
     return (
@@ -80,6 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.L,
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: isIphoneX() ? STATUS_BAR_HEIGHT + Spacing.M : Spacing.XL,
   },
   containerIcons: {
     flexDirection: 'row',
@@ -90,7 +95,7 @@ const styles = StyleSheet.create({
     zIndex: 4,
     position: 'absolute',
     flexDirection: 'row',
-    top: isIphoneX() ? STATUS_BAR_HEIGHT : scaleSize(0),
+    top: isIphoneX() ? STATUS_BAR_HEIGHT + Spacing.M : Spacing.XL,
     right: 0,
     left: 0
   },

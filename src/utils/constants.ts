@@ -1,5 +1,5 @@
 
-export enum ITEM_TYPES {
-  TEXT = 'text',
-  IMAGE = 'image'
+export enum MESSAGE_TYPE {
+  TEXT = 'TEXT',
+  IMAGE = 'IMAGE'
 }

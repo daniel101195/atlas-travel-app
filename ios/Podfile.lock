@@ -633,9 +633,9 @@ PODS:
   - React-jsinspector (0.64.1)
   - react-native-image-picker (4.7.3):
     - React-Core
-  - react-native-pager-view (5.4.9):
+  - react-native-pager-view (5.4.11):
     - React-Core
-  - react-native-safe-area-context (3.3.2):
+  - react-native-safe-area-context (3.4.1):
     - React-Core
   - React-perflogger (0.64.1)
   - React-RCTActionSheet (0.64.1):
@@ -701,9 +701,9 @@ PODS:
     - React-cxxreact (= 0.64.1)
     - React-jsi (= 0.64.1)
     - React-perflogger (= 0.64.1)
-  - ReactNativeLocalization (2.1.7):
+  - ReactNativeLocalization (2.3.1):
     - React-Core
-  - RealmJS (10.12.0):
+  - RealmJS (10.13.0):
     - GCDWebServer
     - React
   - RNCMaskedView (0.1.11):
@@ -712,56 +712,30 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNFBApp (14.3.1):
+  - RNFBApp (14.5.0):
     - Firebase/CoreOnly (= 8.4.0)
     - React-Core
-  - RNFBAuth (14.3.1):
+  - RNFBAuth (14.5.0):
     - Firebase/Auth (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBFirestore (14.3.1):
+  - RNFBFirestore (14.5.0):
     - Firebase/Firestore (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBMessaging (14.3.1):
+  - RNFBMessaging (14.5.0):
     - Firebase/Messaging (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBStorage (14.3.1):
+  - RNFBStorage (14.5.0):
     - Firebase/Storage (= 8.4.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNReanimated (2.4.1):
-    - DoubleConversion
-    - FBLazyVector
-    - FBReactNativeSpec
-    - glog
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React
-    - React-callinvoker
+  - RNReanimated (1.13.3):
     - React-Core
-    - React-Core/DevSupport
-    - React-Core/RCTWebSocket
-    - React-CoreModules
-    - React-cxxreact
-    - React-jsi
-    - React-jsiexecutor
-    - React-jsinspector
-    - React-RCTActionSheet
-    - React-RCTAnimation
-    - React-RCTBlob
-    - React-RCTImage
-    - React-RCTLinking
-    - React-RCTNetwork
-    - React-RCTSettings
-    - React-RCTText
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - RNScreens (3.10.2):
+  - RNScreens (3.13.1):
     - React-Core
     - React-RCTImage
   - RNVectorIcons (8.1.0):
@@ -1028,8 +1002,8 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
-  react-native-pager-view: 3ee7d4c7697fb3ef788346e834a60cca97ed8540
-  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-pager-view: 7f00d63688f7df9fad86dfb0154814419cc5eb8d
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675
   React-RCTActionSheet: fc376be462c9c8d6ad82c0905442fd77f82a9d2a
   React-RCTAnimation: ba0a1c3a2738be224a08092fa7f1b444ab77d309
@@ -1042,18 +1016,18 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4b99a7f5c6c0abbc5256410cc5425fb8531986e1
   React-runtimeexecutor: ff951a0c241bfaefc4940a3f1f1a229e7cb32fa6
   ReactCommon: bedc99ed4dae329c4fcf128d0c31b9115e5365ca
-  ReactNativeLocalization: 90a1181b7672309701dd7e5364fbf587319d41c6
-  RealmJS: b6097dab8af3bcf1cd5fa0ac39a4e4c54980c719
+  ReactNativeLocalization: 076497d7ca70341c751cd3b3e7c86187332a182d
+  RealmJS: 9ca55cce37eedc14f6f3db233ba3d3ad52838c6f
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
-  RNFBApp: 84c9afa0f9aa7a95e121babb9588f6efbb0ba068
-  RNFBAuth: 4820e7ef9058b94717cf8cd380d785df82db687d
-  RNFBFirestore: a35e30e08c4fb140ec44f32cf2eddd4b73202988
-  RNFBMessaging: a010386b04674588172fd08e93979d142a1c9a11
-  RNFBStorage: a8982e3545a5b7424b9580c3f71f719d9626bf49
+  RNFBApp: eda35d8ebf69092e4213d2f3df47a3be8887eb2e
+  RNFBAuth: be9e33151fee1fefd287590df19f911766550a71
+  RNFBFirestore: baf2499560a0878f78258f161e1c4cec62209dd4
+  RNFBMessaging: c5061dc9deeb5763d7769e33de5f80f55e0b30d9
+  RNFBStorage: 5abfe77b563c8ba2f63f27cf8d8a0d362ddeb19c
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNReanimated: 58e7b950e0172235ff8296dd39ec145f9577e301
-  RNScreens: d6da2b9e29cf523832c2542f47bf1287318b1868
+  RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
+  RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815

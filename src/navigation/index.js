@@ -20,7 +20,10 @@ import { GlobalContext } from '~/context';
 import LinearGradient from 'react-native-linear-gradient';
 import Messaging from '~/screens/Messaging';
 import Conversation from '~/screens/Conversation';
-import { onUploadAvatar, onGetAvatarUrl, onUpdateUserInfo, onListentUserInfoChanged } from '~/api';
+import {
+  onUploadAvatar, onGetImageUrl, onUpdateUserInfo,
+  onListentUserInfoChanged, getFCMToken, subscribeCloudMessage
+} from '~/api';
 import { onGetImageFromLibrary } from '~/utils/media';
 import { isEmpty } from 'lodash';
 import { screenOptions } from './helper';
@@ -99,7 +102,7 @@ const onChangeAvatar = async (email, displayName) => {
   const image = await onGetImageFromLibrary({ fileQuality: 0.7 });
   if (isEmpty(image)) return;
   const imageName = await onUploadAvatar({ image, userName: displayName });
-  const url = await onGetAvatarUrl({ imageName });
+  const url = await onGetImageUrl({ imageName });
   onUpdateUserInfo({ userInfo: { avatar: url }, email });
 }
 
@@ -108,8 +111,20 @@ const MainDrawerNavigation = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
+  const updateFCMToken = (email) => {
+    if (isEmpty(email)) return;
+    getFCMToken().then(token => {
+      !isEmpty(token) && state.fcmToken !== token &&
+        onUpdateUserInfo({ userInfo: { fcmToken: token }, email, shouldShowMessage: false });
+    });
+  }
+
   useEffect(() => {
-    onListentUserInfoChanged(state?.userInfo?.email, dispatch);
+    const userEmail = state?.userInfo?.email;
+    const unsubscribe = subscribeCloudMessage();
+    onListentUserInfoChanged(userEmail, dispatch);
+    updateFCMToken(userEmail);
+    return unsubscribe;
   }, [])
 
   const renderHeader = useCallback(() => {

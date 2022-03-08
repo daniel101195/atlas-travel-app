@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { memoDeepEqual } from '../../utils/helpers';
 
@@ -18,16 +18,19 @@ const Image = ({ style = {}, source = '', headers = {}, isLocal = true, onPress,
         }}
         resizeMode={resizeMode}
       />
-    </TouchableOpacity> : <FastImage
-      style={{ ...style }}
-      tintColor={tintColor}
-      source={isLocal ? source : {
-        uri: source,
-        headers,
-        priority
-      }}
-      resizeMode={resizeMode}
-    />
+    </TouchableOpacity> :
+    <View>
+      {source ? <FastImage
+        style={{ ...style }}
+        tintColor={tintColor}
+        source={isLocal ? source : {
+          uri: source,
+          headers,
+          priority
+        }}
+        resizeMode={resizeMode}
+      /> : <ActivityIndicator style={style} size='small' color='white'/>}
+    </View>
 )
 
 export default memoDeepEqual(Image)

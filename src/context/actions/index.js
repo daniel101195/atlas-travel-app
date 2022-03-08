@@ -33,3 +33,8 @@ export const addNewMessage = (newMessage) => ({
   type: actionType.ADD_NEW_MESSAGE,
   newMessage
 })
+
+export const updateFCMToken = (token) => ({
+  type: actionType.UPDATE_FCM_TOKEN,
+  token
+})

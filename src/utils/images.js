@@ -14,6 +14,7 @@ const icon_discover = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlast
 const icon_explore = { uri: 'https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_explore.png?alt=media&token=a02e0348-264c-4930-abe9-82a6f0e4485e' }
 const icon_messaging = { uri: "https://firebasestorage.googleapis.com/v0/b/atlastravel-4c66e.appspot.com/o/icons%2Fic_messaging.png?alt=media&token=71dbe876-b0d6-4052-b1ab-6bc56db2b0d6" }
 const btn_send_message = require('~/assets/images/btn_send.png')
+const icon_gallery = require('~/assets/images/ic_gallery.png')
 
 export {
   login_bg,
@@ -26,5 +27,6 @@ export {
   icon_log_out,
   icon_discover,
   icon_messaging,
-  btn_send_message
+  btn_send_message,
+  icon_gallery
 }

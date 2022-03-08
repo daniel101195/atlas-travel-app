@@ -1,6 +1,6 @@
 import React, { ReactElement, useCallback } from "react";
 import { ConversationScreenProps, ScreenProps } from '~/index';
-import { StyleSheet, View, Animated, FlatList } from "react-native";
+import { StyleSheet, View, Animated, FlatList, KeyboardAvoidingView, StatusBar } from "react-native";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useConversationHooks } from './hooks';
 import BubbleConversation from "./BubbleConversation";
@@ -8,7 +8,7 @@ import { Icon, MessageInput } from '~/components';
 import { scaleSize, Spacing } from "~/metrics";
 
 const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): ReactElement => {
-  const { userInfo: { email }, ref, conversations, loadMore, isEndReached, animationFlex,
+  const { userInfo: { email }, ref, conversations, loadMore, isEndReached, animationFlex, roomId,
     onSendMessage, onContentSizeChange, onGroupConversation, onScrollToBottom,
     onLoadMore, onScroll, onEndReached, onScrollEndDrag } = useConversationHooks(props);
 
@@ -51,29 +51,15 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
     return (
       <MessageInput onSend={onSendMessage} />
     )
-  }, [conversations])
+  }, [conversations, roomId])
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={scaleSize(64)}
+      style={styles.container}>
+      <StatusBar barStyle='dark-content'/>
       {conversations.length > 0 ?
-        // <SectionList
-        //   ref={ref}
-        //   style={styles.containerConversation}
-        //   onEndReachedThreshold={0}
-        //   scrollEventThrottle={500}
-        //   refreshing={loadMore}
-        //   contentContainerStyle={styles.containerContent}
-        //   showsVerticalScrollIndicator={false}
-        //   stickySectionHeadersEnabled={false}
-        //   keyExtractor={(item, index) => item?.updatedAt + index}
-        //   onScrollEndDrag={onScrollEndDrag}
-        //   onScroll={onScroll}
-        //   sections={onGroupConversation()}
-        //   onContentSizeChange={onContentSizeChange}
-        //   onEndReached={onEndReached}
-        //   onRefresh={onLoadMore}
-        //   renderItem={renderItem}
-        //   renderSectionHeader={renderSectionHeader} />
         <FlatList
           ref={ref}
           data={onGroupConversation()}
@@ -89,11 +75,10 @@ const Conversation: React.FC<ConversationScreenProps> = (props: ScreenProps): Re
           onContentSizeChange={onContentSizeChange}
           onEndReached={onEndReached}
           onRefresh={onLoadMore}
-          renderItem={renderItem} />
-        : <View style={styles.container} />}
+          renderItem={renderItem} /> : <View style={styles.container} />}
       {renderIconScrollDown()}
       {renderInput()}
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 

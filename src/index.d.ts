@@ -1,13 +1,12 @@
 import { JSXElementConstructor, ReactChildren } from "react";
 import { StyleProp, ViewProps } from "react-native";
 
-export declare type ConversationType = 'text' | 'image' | 'video';
+export declare type ConversationType = 'TEXT' | 'IMAGE' | 'VIDEO';
 export interface MessagingProps {
   
 }
 
 export interface HeaderProps {
-  onToggleDrawer: Function,
   title: String,
   haveRightIcons?: Boolean,
   isDarkStyle?: Boolean,
@@ -60,13 +59,14 @@ export interface MemberProps {
 }
 export interface ConversationProps {
   id: string,
-  content: string,
+  content: string | ImageProps,
   createdAt: any,
   sender: string,
   type: ConversationType,
   updatedAt: any,
   isShowTimestamp?: boolean,
-  timestamp?: any
+  timestamp?: any,
+  timeStamp?: any
 }
 export interface UserProps {
   avatar: string,
@@ -82,10 +82,11 @@ export interface TimeInterface {
 }
 export interface BubbleConversationProps {
   email: string,
-  item: ConversationProps
+  item: ConversationProps,
+  onPressImage?: () => void
 }
 export interface MessageInputProps {
-  onSend: (message: String) => void
+  onSend: (message: string | ImageProps, messageType: string) => void
 }
 export interface AlertPopupProps {
   onPress: () => void,
@@ -97,4 +98,10 @@ export interface ConversationScreenProps {
 export interface GroupConversationProps {
   title: string,
   data: Array<ConversationProps>
+}
+export interface ImageProps {
+  fileName?: string,
+  fileSize?: string,
+  type?: string,
+  uri?: string
 }

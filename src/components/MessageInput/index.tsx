@@ -1,15 +1,17 @@
 import React, { useCallback, useRef, useState } from "react";
-import { MessageInputProps } from '~/index';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { MessageInputProps, ImageProps } from '~/index';
+import { View, StyleSheet, TextInput } from 'react-native';
 import colors from "~/utils/colors";
-import Image from '../Image';
+import Image from '~/components/Image';
 import { FONT_16, scaleSize } from "~/utils/spacing";
 import { Radius, Spacing } from "~/metrics";
-import { btn_send_message } from '~/utils/images';
+import { btn_send_message, icon_gallery } from '~/utils/images';
 import { LocalizeString } from '~/localize';
 import { isEmpty } from 'lodash';
+import { MESSAGE_TYPE } from '~/utils/constants';
+import { onGetImageFromLibrary } from "~/utils/media";
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) => { } }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string | ImageProps, messageType: string) => {} }) => {
   const [text, setText] = useState<string>('');
   const ref = useRef(null);
 
@@ -19,16 +21,20 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) =>
 
   const onSendMessage = useCallback(() => {
     if (isEmpty(text)) return;
-    onSend(text);
+    onSend(text, MESSAGE_TYPE.TEXT);
     ref?.current?.clear?.();
   }, [text, ref])
+
+  const onChooseGallery = useCallback(async () => {
+    const image  = await onGetImageFromLibrary({ fileQuality: 0.7 });
+    !isEmpty(image) && onSend(image, MESSAGE_TYPE.IMAGE);
+  }, [])
 
   return (
     <View style={{ ...styles.container, ...styles.shadow }}>
       <TextInput ref={ref} style={styles.input} placeholder={LocalizeString.titleTypeSomething} onChangeText={onChangeText} />
-      <TouchableOpacity onPress={onSendMessage}>
-        <Image source={btn_send_message} style={styles.btnSend} />
-      </TouchableOpacity>
+      <Image onPress={onChooseGallery} source={icon_gallery} style={styles.btnImage} />
+      <Image onPress={onSendMessage} source={btn_send_message} style={styles.btnSend} />
     </View>
   )
 }
@@ -36,7 +42,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend = (value: string) =>
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.bgMessageInput,
-    height: scaleSize(40),
+    height: scaleSize(42),
     marginBottom: Spacing.L,
     marginHorizontal: Spacing.L,
     borderRadius: Radius.XL,
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   input: {
-    width: scaleSize(268),
+    width: scaleSize(250),
     fontSize: FONT_16,
     fontFamily: 'Montserrat-Medium'
   },
@@ -62,7 +68,12 @@ const styles = StyleSheet.create({
   btnSend: {
     width: scaleSize(68),
     height: scaleSize(68),
-    marginTop: Spacing.XS
+    marginTop: Spacing.XS,
+    marginEnd: Spacing.M
+  },
+  btnImage: {
+    width: scaleSize(20),
+    height: scaleSize(20)
   }
 })
 

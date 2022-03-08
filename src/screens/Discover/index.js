@@ -67,7 +67,9 @@ const Discover = (props) => {
   return (
     <BaseScreen
       isLoading={isLoading}
-      header={<Header title={LocalizeString.titleDiscover} onToggleDrawer={onToggleDrawer} />}
+      isShowHeader={true}
+      headerTitle={LocalizeString.titleDiscover}
+      navigation={props.navigation}
       bottomSheet={renderBottomSheet}>
       <View style={styles.containerContent}>
         {renderContent()}

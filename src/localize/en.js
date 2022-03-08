@@ -53,6 +53,7 @@ export default {
   titleCreate: 'Create',
   titleCreateRoomSuccess: 'Create Room successfully!',
   titleCreateRoomFailed: 'Create Room failed!',
+  titleLastImage: 'has sent an image',
 
   //Sign Out
   titleSignOut: 'Sign out',

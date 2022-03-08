@@ -45,6 +45,14 @@ const globalReducer = (state = initialState, action) => {
       }
     }
     case actionType.ADD_NEW_MESSAGE: {
+      const index = state.conversations.findIndex(element => element.id === action.newMessage.id);
+      if (index !== -1) {
+        state.conversations[index] = action.newMessage;
+        return {
+          ...state,
+          conversations: [...state.conversations]
+        }
+      }
       return {
         ...state,
         conversations: state.conversations.concat(action.newMessage)
@@ -54,6 +62,12 @@ const globalReducer = (state = initialState, action) => {
       return {
         ...state,
         conversations: []
+      }
+    }
+    case actionType.UPDATE_FCM_TOKEN: {
+      return {
+        ...state,
+        userInfo: { ...state.userInfo, fcmToken: action.token }
       }
     }
     default: return state

@@ -1,32 +1,34 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Easing } from 'react-native';
-import { ScreenProps, ConversationProps } from '~/index';
+import { ScreenProps, ConversationProps, ImageProps } from '~/index';
 import { renderHeaderLeft } from '~/utils/helpers';
 import {
-  onGetConversations, onSendMessage as onSendMessageAPI,
-  updateLastMessage, updateLastSeen, onLoadMoreConversation
+  onGetConversations, onSendMessage as onSendMessageAPI, onGetImageUrl,
+  updateLastMessage, updateLastSeen, onLoadMoreConversation, onUploadImageConversation
 } from '~/api';
 import { GlobalContext } from '~/context';
 import { loadMoreConversation, clearConversation, addNewMessage } from '~/context/actions';
 import firestore from '@react-native-firebase/firestore';
-import { ITEM_TYPES } from '~/utils/constants';
 import { nanoid } from 'nanoid/non-secure';
 import colors from "~/utils/colors";
 import { scaleSize } from "~/metrics";
 import { cloneDeep } from "lodash";
+import { STORAGE_PATH } from "~/api/constants";
+import { MESSAGE_TYPE } from '~/utils/constants';
+import { LocalizeString } from "~/localize";
 
 let MAX_HEIGHT = 0;
 let unsubscribe;
 const INTERVAL_MESSAGE = 300000;
 
-const useConversationHooks = (props: ScreenProps) => {
+const useConversationHooks = (props?: ScreenProps) => {
   const ref = useRef(null);
   const animationFlex = useRef(new Animated.Value(0)).current;
   const [loadMore, setLoadMore] = useState(false);
   const [isEndReached, setEndReached] = useState(true);
 
   const { state: { conversations, userInfo }, dispatch } = useContext(GlobalContext);
-  const { participants, id: roomId, imageUrl, roomName } = props.route.params?.roomInfo;
+  const { participants, id: roomId, imageUrl, roomName } = props?.route?.params?.roomInfo;
   const participant = participants?.filter(user => user?.email !== userInfo?.email)?.[0];
   const roomImage = imageUrl || participant?.avatar;
 
@@ -43,19 +45,35 @@ const useConversationHooks = (props: ScreenProps) => {
     });
   }
 
-  const onSendMessage = (message: string): void => {
+  const onSendMessage = async (message: string | ImageProps, messageType: string): Promise<void> => {
     const timestamp = firestore.FieldValue.serverTimestamp();
     const messageData = {
       id: nanoid(),
-      content: message,
       sender: userInfo?.email,
       createdAt: timestamp,
       updatedAt: timestamp,
-      type: ITEM_TYPES.TEXT
+      content: null,
+      type: messageType
     };
-    dispatch(addNewMessage(messageData));
+    if (messageType === MESSAGE_TYPE.TEXT) {
+      messageData.content = message;
+    } else if (messageType === MESSAGE_TYPE.IMAGE) {
+      dispatch(addNewMessage({ ...messageData, timeStamp: new Date() }));
+      const imageName = await onUploadImageConversation({
+        image: message,
+        roomName: roomId.toString() + '_' + Date.now().toString()
+      });
+      messageData.content = await onGetImageUrl({ imageName, path: STORAGE_PATH.conversations });
+    }
+    if (!messageData.content) return;
+    dispatch(addNewMessage({ ...messageData }));
     onSendMessageAPI({ roomId, message: messageData });
-    updateLastMessage({ roomId, lastMessage: message, lastSender: userInfo?.email, updatedAt: timestamp });
+    updateLastMessage({
+      roomId,
+      lastMessage: messageType === MESSAGE_TYPE.TEXT ? message : userInfo?.displayName + ' ' + LocalizeString.titleLastImage,
+      lastSender: userInfo?.email,
+      updatedAt: timestamp
+    });
     updateLastSeen({ roomId, lastSeen: [userInfo?.email] });
   }
 
@@ -174,6 +192,7 @@ const useConversationHooks = (props: ScreenProps) => {
     loadMore,
     isEndReached,
     animationFlex,
+    roomId,
     onSendMessage,
     onContentSizeChange,
     onGroupConversation,

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import {
   View,
   TextInput,
   Animated,
-  Pressable,
+  Pressable
 } from 'react-native';
 import colors from '../../utils/colors';
-import { memoDeepEqual } from '../../utils/helpers';
-import { FontSize, Spacing } from '../../metrics';
+import { FontSize, Spacing, scaleSize } from '../../metrics';
 import { Icon, CustomText } from '../index';
+import { useCallback } from 'react';
 
 const FloatingLabelInput = ({ value = '', label = '', containerStyle = {}, keyId, textStyle = {},
   onChangeText = () => { }, isSecure = false, iconName = '', iconType = '', errorMessage = '', inputRef,
@@ -43,33 +43,58 @@ const FloatingLabelInput = ({ value = '', label = '', containerStyle = {}, keyId
     }).start();
   }, [isFocused, isEmpty])
 
-  return (
-    <View key={keyId} style={{ ...defaultStyles.container, ...containerStyle }}>
+  const renderAnimatedLabel = useCallback(() => {
+    return (
       <Animated.Text style={{ ...defaultStyles.labelStyle, ...animatedLabelStyle }}>
         {label}
       </Animated.Text>
+    )
+  }, [label])
+
+  const renderRightIcon = useCallback(() => {
+    if (iconName.trim() === '') return null;
+    return (
+      <Pressable style={defaultStyles.icon} onPressIn={onPressIcon} onPressOut={onReleaseIcon}>
+        <Icon
+          name={iconName}
+          type={iconType}
+          size={scaleSize(24)}
+          color={iconColor} />
+      </Pressable>
+    )
+  }, [iconName, iconType, iconColor])
+
+  const renderErrorMessage = useCallback(() => {
+    if (errorMessage.trim() === '') return null;
+    return (
+      <CustomText customStyle={defaultStyles.errorMessage}>{errorMessage}</CustomText>
+    )
+  }, [errorMessage])
+
+  const renderInput = useCallback(() => {
+    return (
+      <TextInput
+        ref={inputRef}
+        style={{ ...defaultStyles.textInput(isFocused,), ...textStyle }}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onChangeText={onChangeText}
+        blurOnSubmit
+        defaultValue={value}
+        secureTextEntry={isSecure}
+        selectionColor={defaultStyles.selectionColor}
+        {...props} />
+    )
+  }, [props, inputRef, isFocused, textStyle, value, isSecure])
+
+  return (
+    <View key={keyId} style={{ ...defaultStyles.container, ...containerStyle }}>
+      {renderAnimatedLabel()}
       <View style={defaultStyles.containerInput}>
-        <TextInput
-          ref={inputRef}
-          style={{ ...defaultStyles.textInput(isFocused, iconName !== ''), ...textStyle }}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onChangeText={onChangeText}
-          blurOnSubmit
-          defaultValue={value}
-          secureTextEntry={isSecure}
-          selectionColor={defaultStyles.selectionColor}
-          {...props} />
-        {iconName !== '' && <Pressable onPressIn={onPressIcon} onPressOut={onReleaseIcon}>
-          <Icon
-            name={iconName}
-            type={iconType}
-            size={24}
-            color={iconColor}
-            style={defaultStyles.icon} />
-        </Pressable>}
+        {renderInput()}
+        {renderRightIcon()}
       </View>
-      {errorMessage !== '' && <CustomText customStyle={defaultStyles.errorMessage}>{errorMessage}</CustomText>}
+      {renderErrorMessage()}
     </View>
   )
 }
@@ -110,4 +135,4 @@ const defaultStyles = {
   selectionColor: colors.primaryPink,
 }
 
-export default memoDeepEqual(FloatingLabelInput)
+export default memo(FloatingLabelInput)

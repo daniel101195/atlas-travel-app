@@ -3,6 +3,7 @@ import globalReducer from './reducer';
 
 export const initialState = {
   lang: 'en',
+  fcmToken: '',
   userInfo: null,
   messages: [],
   conversations: []

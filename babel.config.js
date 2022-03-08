@@ -8,6 +8,6 @@ module.exports = {
         "rootPathPrefix": "~/"
       }
     ],
-    'react-native-reanimated/plugin' // KEEP IT HERE
+    // 'react-native-reanimated/plugin' // KEEP IT HERE (only using for reanimated v2)
   ],
 };

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import colors from '~/utils/colors';
 import { login_bg_2 } from '~/utils/images';
 import { Input, CustomText, Toggle, BaseScreen, Button } from '~/components';
@@ -9,7 +9,7 @@ import { LocalizeString } from '~/localize';
 import { memoDeepEqual } from '~/utils/helpers'
 
 const SignIn = (props) => {
-  const { isRemember, isLoading, isShowPass, errorMessage, loginData,
+  const { isRemember, isLoading, isShowPass, errorMessage, loginData, emailRef, passwordRef,
     onShowPass, onHidePass, onSubmit, onChangePassword, onChangeUsername,
     onChangeRememberLogin, onNavigateSignUp } = useLoginHooks(props);
 
@@ -30,14 +30,17 @@ const SignIn = (props) => {
     return (
       <View style={styles.containerInput}>
         <Input
+          inputRef={emailRef}
           label={LocalizeString.titleEmail}
           onChangeText={onChangeUsername}
           value={loginData?.username}
           iconName={iconEmail}
+          autoCapitalize='none'
           containerStyle={{ marginVertical: Spacing.L }}
           iconColor={colors.primaryPink}
           iconType='material-community' />
         <Input
+          inputRef={passwordRef}
           label={LocalizeString.titlePassword}
           containerStyle={styles.password}
           onChangeText={onChangePassword}
@@ -50,7 +53,7 @@ const SignIn = (props) => {
         {renderRemenberLogin()}
       </View>
     )
-  }, [loginData, errorMessage, isShowPass, isRemember])
+  }, [loginData, errorMessage, isShowPass, isRemember, emailRef])
 
   const renderRemenberLogin = useCallback(() => {
     return (

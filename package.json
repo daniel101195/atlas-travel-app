@@ -8,7 +8,7 @@
     "ios": "react-native run-ios",
     "start": "npx react-native start --reset-cache",
     "test": "jest",
-    "lint": "eslint .",
+    "lint": "eslint ./src",
     "postinstall": "cd ios && pod install && cd .."
   },
   "dependencies": {
@@ -37,11 +37,12 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-localization": "^2.1.7",
     "react-native-pager-view": "^5.4.6",
-    "react-native-reanimated": "^2.1.0",
+    "react-native-reanimated": "1.13.3",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.3.0",
     "react-native-vector-icons": "^8.1.0",
-    "realm": "^10.4.2",
+    "realm": "^10.13.0",
+    "typescript": "^4.6.2",
     "yup": "^0.32.9"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
     "babel-jest": "^26.6.3",
     "babel-plugin-root-import": "^6.6.0",
     "eslint": "^7.26.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.66.0",
     "react-test-renderer": "17.0.1"

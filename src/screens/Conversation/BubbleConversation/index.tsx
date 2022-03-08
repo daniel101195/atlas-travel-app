@@ -1,52 +1,60 @@
 import React, { ReactElement, useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Animated, } from "react-native";
 import { BubbleConversationProps } from '~/index';
 import { CustomText, Image } from '~/components';
 import { Radius, scaleSize, Spacing } from "~/metrics";
 import LinearGradient from 'react-native-linear-gradient';
 import colors from "~/utils/colors";
-import { ITEM_TYPES } from '~/utils/constants';
+import { MESSAGE_TYPE } from '~/utils/constants';
 import { formatDate } from '~/utils/time';
 import { FONT_14 } from "~/utils/spacing";
 import HeaderSection from "../HeaderSection";
 
 const BubbleConversation: React.FC<BubbleConversationProps> = ({ email = '', item }) => {
-  const { isShowTimestamp, createdAt, sender, type, content } = item || {};
+  const { isShowTimestamp, createdAt, sender, type, content, timeStamp } = item || {};
   const isSender = email === sender;
+  const animatedValue = new Animated.Value(0);
 
   const renderContent = useCallback((): ReactElement => {
-    if (type === ITEM_TYPES.IMAGE) {
+    if (type === MESSAGE_TYPE.IMAGE) {
       return (
-        <Image style={styles.image} source={content} />
+        <Image style={styles.image} source={content} isLocal={false} resizeMode='cover' />
       )
     }
     return (
       <CustomText customStyle={isSender ? styles.textSender : styles.textReceiver}>{content}</CustomText>
     )
-  }, [type, content])
+  }, [type, content, isSender, animatedValue])
 
   const renderSenderBubble = useCallback((): ReactElement => {
+    const isImage = type === MESSAGE_TYPE.IMAGE;
     return (
-      <View style={styles.containerSender}>
+      <View style={{ ...styles.containerSender, padding: isImage ? scaleSize(0) : Spacing.M }}>
         {renderContent()}
       </View>
     )
-  }, [item])
+  }, [content, type, isSender])
 
   const renderReceiverBubble = useCallback((): ReactElement => {
+    const isImage = type === MESSAGE_TYPE.IMAGE;
     return (
-      <LinearGradient colors={colors.bgGradient} style={styles.containerReceiver}>
+      <LinearGradient
+        colors={colors.bgGradient}
+        style={{
+          ...styles.containerReceiver,
+          padding: isImage ? scaleSize(0) : Spacing.M
+        }}>
         {renderContent()}
       </LinearGradient>
     )
-  }, [item])
+  }, [content, type, isSender])
 
   const renderHeader = useCallback((): ReactElement => {
-    if (!isShowTimestamp) return null;
+    if (!isShowTimestamp && !timeStamp) return null;
     return (
-      <HeaderSection title={formatDate(createdAt.toDate?.())} />
+      <HeaderSection title={timeStamp ? formatDate(timeStamp) : formatDate(createdAt.toDate?.())} />
     )
-  }, [isShowTimestamp, createdAt])
+  }, [isShowTimestamp, createdAt, timeStamp])
 
   return (
     <View>
@@ -60,7 +68,6 @@ const styles = StyleSheet.create({
   containerSender: {
     marginHorizontal: Spacing.M,
     backgroundColor: colors.bgSenderBubble,
-    padding: Spacing.M,
     borderRadius: Radius.S,
     alignSelf: 'flex-end',
     marginVertical: Spacing.S
@@ -73,8 +80,9 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.S
   },
   image: {
-    width: scaleSize(84),
-    height: scaleSize(84),
+    width: scaleSize(120),
+    height: scaleSize(120),
+    borderRadius: Radius.S
   },
   textReceiver: {
     color: colors.white,

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState, useContext } from "react";
+import { useCallback, useEffect, useState, useContext, useRef } from "react";
 import { validateEmail, checkStringEmpty } from '../../utils/string';
 import { LocalizeString } from '../../localize';
 import { screens, stacks } from "../../navigation/screens";
 import { redirect, redirect_comp, REDIRECT_TYPE } from "../../navigation/helper";
-import { saveUserInfo, getUserInfo, deleteUserInfo } from '../../storage';
+import { saveUserInfo, getUserInfo, deleteUserInfo } from '~/storage';
 import { updateUserInfo } from '../../context/actions';
 import { GlobalContext } from '../../context';
 import { onSignIn, onGetUserInfo as onGetUserInfoFirestore } from '../../api';
@@ -11,6 +11,8 @@ import isEmpty from 'lodash/isEmpty';
 import { lowercaseLetter } from '../../utils/string';
 
 const useLoginHooks = (props) => {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
   const { dispatch } = useContext(GlobalContext);
   const [isRemember, setRemember] = useState(false);
   const [isShowPass, setShowPass] = useState(false);
@@ -19,12 +21,12 @@ const useLoginHooks = (props) => {
   const [loginData, setLoginData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const onChangeRememberLogin = useCallback(() => {
-    setRemember(!isRemember)
+  const onChangeRememberLogin = useCallback((value) => {
+    setRemember(value !== undefined ? value : !isRemember)
   }, [isRemember])
 
   const onChangeUsername = useCallback((email) => {
-    setLoginData({ ...loginData, username: lowercaseLetter(email) });
+    setLoginData({ ...loginData, username: email });
     onChangeValidation();
   }, [loginData])
 
@@ -37,18 +39,20 @@ const useLoginHooks = (props) => {
   }
 
   const onSubmit = useCallback(async () => {
+    const username = emailRef.current?._internalFiberInstanceHandleDEV?.memoizedProps?.text || loginData?.username;
+    const password = passwordRef.current?._internalFiberInstanceHandleDEV?.memoizedProps?.text || loginData?.password;
     try {
       onChangeLoading(true);
       if (onValidateInput()) {
         const userInfo = {
-          username: loginData?.username,
-          password: loginData?.password,
-          email: loginData?.username,
+          username: username?.toLowerCase(),
+          password: password,
+          email: username?.toLowerCase(),
           avatar: 'https://hungrygen.com/wp-content/uploads/2019/11/placeholder-male-square.png',
         }
         await onSubmitCompleted(await onSignIn({
-          username: loginData?.username,
-          password: loginData?.password
+          username: username?.toLowerCase(),
+          password: password
         }), userInfo);
       }
     } catch (error) {
@@ -108,19 +112,19 @@ const useLoginHooks = (props) => {
     return true;
   }, [loginData])
 
-  const onGetUserInfo = async () => {
+  const onGetUserInfo = () => {
     setLoading(true);
     const { email, password } = props?.route?.params;
     if (!!email && !!password) {
       setLoginData({ username: lowercaseLetter(email), password });
     } else {
-      const data = await getUserInfo();
-      if (!isEmpty(data)) {
+      const data = getUserInfo();
+      if (data.length > 0) {
         setLoginData({
-          username: lowercaseLetter(data[data.length - 1].email),
-          password: data[data.length - 1].password
+          username: data[data.length - 1]?.email,
+          password: data[data.length - 1]?.password
         });
-        onChangeRememberLogin();
+        onChangeRememberLogin(true);
       }
     }
     setLoading(false);
@@ -133,7 +137,7 @@ const useLoginHooks = (props) => {
   }, [])
 
   useEffect(() => {
-    if (isValidate) {
+    if (isValidate && loginData) {
       if (!validateEmail(loginData?.username.toLowerCase())) {
         errorMessage !== LocalizeString.titleInvalidFormatEmail &&
           setErrorMessage(LocalizeString.titleInvalidFormatEmail)
@@ -149,6 +153,8 @@ const useLoginHooks = (props) => {
     errorMessage,
     isLoading,
     loginData,
+    emailRef,
+    passwordRef,
     onChangeUsername,
     onChangePassword,
     onChangeRememberLogin,
